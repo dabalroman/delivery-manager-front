@@ -1,0 +1,52 @@
+$border-color: #bbb;
+
+.list{
+    width: 250px;
+    margin: 0 0 0 auto;
+    padding: 5px;
+    box-shadow: -0px 0px 10px $border-color;
+    background-color: #fff;
+    border-left: 1px solid $border-color;
+
+    .head{
+        text-align: center;
+        border-bottom: 1px solid $border-color;
+        padding-bottom: 1em;
+
+        .date{
+            display: block;
+        }
+
+        .amount{
+            display: block;
+            font-size: 3em;
+        }
+    }
+
+    .card{
+        //background-color: #eee;
+        box-sizing: border-box;
+        padding: 4px;
+        border-bottom: 1px solid $border-color;
+
+        .address{
+            display: block;
+        }
+
+        .details{
+            display: block;
+            font-size: 0.7em;
+            color: #777;
+        }
+
+        &:hover{
+            background-color: #eee;
+            cursor: pointer;
+        }
+
+        &:last-of-type{
+            border-bottom: none !important;
+        }
+    }
+}
+
