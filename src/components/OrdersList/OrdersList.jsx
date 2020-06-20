@@ -55,9 +55,9 @@ class OrdersList extends Component{
                         <span className={Style.date}>{batchData['deliveryDate']}</span>
                     </div>
                     {orders.map(order => (
-                        <div className={Style.card} key={order.id}>
-                            <span className={Style.address}>{order.street} {order.street_number} {(order.flat_number) ? '/ ' + order.flat_number : null}</span>
-                            <span className={Style.details}>{order.amount}x {order.type}</span>
+                        <div className={Style.card} key={order['order_id']} data-aid={order['address_id']}>
+                            <span className={Style.address}>{order['street']} {order['street_number']} {(order['flat_number']) ? '/ ' + order['flat_number'] : null}</span>
+                            <span className={Style.details}>{order['amount']}x {order['type']} ({order['address_id']})</span>
                         </div>
                     ))}
                 </div>

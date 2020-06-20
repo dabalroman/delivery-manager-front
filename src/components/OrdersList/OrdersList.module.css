@@ -1,0 +1,42 @@
+.list {
+  width: 250px;
+  margin: 0 0 0 auto;
+  padding: 5px;
+  box-shadow: 0px 0px 10px #bbb;
+  background-color: #fff;
+  border-left: 1px solid #bbb;
+}
+.list .head {
+  text-align: center;
+  border-bottom: 1px solid #bbb;
+  padding-bottom: 1em;
+}
+.list .head .date {
+  display: block;
+}
+.list .head .amount {
+  display: block;
+  font-size: 3em;
+}
+.list .card {
+  box-sizing: border-box;
+  padding: 4px;
+  border-bottom: 1px solid #bbb;
+}
+.list .card .address {
+  display: block;
+}
+.list .card .details {
+  display: block;
+  font-size: 0.7em;
+  color: #777;
+}
+.list .card:hover {
+  background-color: #eee;
+  cursor: pointer;
+}
+.list .card:last-of-type {
+  border-bottom: none !important;
+}
+
+/*# sourceMappingURL=OrdersList.module.css.map */
