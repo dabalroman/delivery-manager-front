@@ -2,11 +2,14 @@ $border-color: #bbb;
 
 .list{
     width: 250px;
+    height: 100%;
     margin: 0 0 0 auto;
     padding: 5px;
     box-shadow: -0px 0px 10px $border-color;
     background-color: #fff;
     border-left: 1px solid $border-color;
+    overflow-y: scroll;
+    box-sizing: border-box;
 
     .head{
         text-align: center;
