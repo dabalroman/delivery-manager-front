@@ -49,11 +49,12 @@ export const Card = ({ id, data, index, moveCard }) => {
         }),
     });
 
-    const opacity = isDragging ? 0 : 1;
+    const opacity = isDragging ? 0.1 : 1;
+    const bgc = isDragging ? "#55F" : '';
     drag(drop(ref));
 
     return (
-        <div ref={ref} className={Style.card} key={data.id} data-aid={data.address_id} style={{ opacity }}>
+        <div ref={ref} className={Style.card} key={data.id} data-aid={data.address_id} style={{ backgroundColor: bgc, opacity }}>
             <span className={Style.address}>{data.street} {data.street_number} {(data.flat_number) ? '/ ' + data.flat_number : null}</span>
             <span className={Style.details}>{data.amount}x {data.type} ({data.address_id})</span>
         </div>
