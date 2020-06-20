@@ -25,3 +25,7 @@ yarn-error.log*
 /.idea
 .idea/*
 /.idea/
+/package-lock.json
+/npm
+
+*.module.*.map

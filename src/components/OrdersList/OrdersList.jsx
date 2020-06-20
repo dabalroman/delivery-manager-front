@@ -1,5 +1,8 @@
 import React, {Component} from "react";
 import Style from "./OrdersList.module.css";
+import {DndProvider} from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import {List} from "./DragAndDrop/List";
 
 class OrdersList extends Component{
     constructor(props) {
@@ -54,12 +57,9 @@ class OrdersList extends Component{
                         <span className={Style.amount}>{orders.length} / {batchData['ordersAmount']}</span>
                         <span className={Style.date}>{batchData['deliveryDate']}</span>
                     </div>
-                    {orders.map(order => (
-                        <div className={Style.card} key={order['order_id']} data-aid={order['address_id']}>
-                            <span className={Style.address}>{order['street']} {order['street_number']} {(order['flat_number']) ? '/ ' + order['flat_number'] : null}</span>
-                            <span className={Style.details}>{order['amount']}x {order['type']} ({order['address_id']})</span>
-                        </div>
-                    ))}
+                    <DndProvider backend={HTML5Backend}>
+                        <List ordersData={orders}/>
+                    </DndProvider>
                 </div>
             );
         }
