@@ -15,8 +15,10 @@ class OrdersList extends Component{
             batchID: null,
             newAddressesAmount: null,
             knownAddressesAmount: null,
-            deliveryDate: null
+            deliveryDate: null,
         };
+
+        this.route = [];
     }
 
     componentDidMount() {
@@ -44,6 +46,11 @@ class OrdersList extends Component{
             )
     }
 
+    updateRoute(newRoute){
+        this.route = newRoute.slice();
+        console.log(this.route);
+    }
+
     render() {
         const { error, isLoaded, orders, ...batchData} = this.state;
         if (error) {
@@ -58,7 +65,7 @@ class OrdersList extends Component{
                         <span className={Style.date}>{batchData['deliveryDate']}</span>
                     </div>
                     <DndProvider backend={HTML5Backend}>
-                        <List ordersData={orders}/>
+                        <List ordersData={orders} updateRoute={(newRoute) => this.updateRoute(newRoute)}/>
                     </DndProvider>
                 </div>
             );

@@ -1,9 +1,18 @@
-import React, {useCallback, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {Card} from './Card'
 import update from 'immutability-helper'
 
-export const List = (ordersData) => {
-    const [cards, setCards] = useState(...Object.values(ordersData));
+export const List = (props) => {
+    const [cards, setCards] = useState(props.ordersData);
+    const updateRoute = props.updateRoute;
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            updateRoute(createRouteArray(cards));
+        }, 5000);
+
+        return () => clearTimeout(timeout);
+    },[cards, updateRoute]);
 
     const moveCard = useCallback(
         (dragIndex, hoverIndex) => {
@@ -15,7 +24,7 @@ export const List = (ordersData) => {
                         [hoverIndex, 0, dragCard],
                     ],
                 }),
-            )
+            );
         },
         [cards],
     );
@@ -38,6 +47,10 @@ export const List = (ordersData) => {
                 moveCard={moveCard}
             />
         )
+    };
+
+    const createRouteArray = (cards) => {
+        return cards.map(card => card.address_id);
     };
 
     return (
