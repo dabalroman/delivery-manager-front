@@ -29,12 +29,12 @@ class OrdersList extends Component{
                     console.log(result);
                     this.setState({
                         isLoaded: true,
-                        batchID: result.data.batch_id,
-                        deliveryDate: result.data.delivery_date,
-                        ordersAmount: result.data.orders_amount,
-                        newAddressesAmount: result.data.new_addresses_amount,
-                        knownAddressesAmount: result.data.known_addresses_amount,
-                        orders: result.data.orders,
+                        batchID: result.data['batch_id'],
+                        deliveryDate: result.data['delivery_date'],
+                        ordersAmount: result.data['orders_amount'],
+                        newAddressesAmount: result.data['new_addresses_amount'],
+                        knownAddressesAmount: result.data['known_addresses_amount'],
+                        orders: result.data['orders'],
                     });
                 },
                 (error) => {
