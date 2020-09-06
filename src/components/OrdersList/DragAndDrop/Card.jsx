@@ -1,9 +1,9 @@
-import React, { useRef } from 'react'
-import { useDrag, useDrop } from 'react-dnd'
-import { ItemTypes } from './ItemTypes'
+import React, {useRef} from 'react'
+import {useDrag, useDrop} from 'react-dnd'
+import {ItemTypes} from './ItemTypes'
 import Style from "../OrdersList.module.css";
 
-export const Card = ({ id, data, index, moveCard }) => {
+export const Card = ({id, data, index, moveCard}) => {
     const ref = useRef(null);
     const [, drop] = useDrop({
         accept: ItemTypes.CARD,
@@ -42,8 +42,8 @@ export const Card = ({ id, data, index, moveCard }) => {
         },
     });
 
-    const [{ isDragging }, drag] = useDrag({
-        item: { type: ItemTypes.CARD, id, index },
+    const [{isDragging}, drag] = useDrag({
+        item: {type: ItemTypes.CARD, id, index},
         collect: (monitor) => ({
             isDragging: monitor.isDragging(),
         }),
@@ -54,9 +54,16 @@ export const Card = ({ id, data, index, moveCard }) => {
     drag(drop(ref));
 
     return (
-        <div ref={ref} className={Style.card} key={data.id} data-aid={data.address_id} style={{ backgroundColor: bgc, opacity }}>
-            <span className={Style.address}>{data.street} {data.street_number} {(data.flat_number) ? '/ ' + data.flat_number : null}</span>
-            <span className={Style.details}>{data.amount}x {data.type} (#{(data.address_id).toString().padStart(3, '0')})</span>
+        <div ref={ref}
+             className={Style.card}
+             key={data.id}
+             data-aid={data.address_id}
+             style={{backgroundColor: bgc, opacity}}
+        >
+            <span onClick={() => {console.log(data.address_id)}}
+                className={Style.address}>{data.street} {data.street_number} {(data.flat_number) ? '/ ' + data.flat_number : null}</span>
+            <span
+                className={Style.details}>{data.amount}x {data.type} (#{(data.address_id).toString().padStart(3, '0')})</span>
         </div>
     )
 };
