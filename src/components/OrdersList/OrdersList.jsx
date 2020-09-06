@@ -52,7 +52,7 @@ class OrdersList extends Component{
     }
 
     render() {
-        const { error, isLoaded, orders, ...batchData} = this.state;
+        const { error, isLoaded, orders } = this.state;
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
@@ -61,8 +61,10 @@ class OrdersList extends Component{
             return (
                 <div className={Style.list}>
                     <div className={Style.head}>
-                        <span className={Style.amount}>{orders.length} / {batchData['ordersAmount']}</span>
-                        <span className={Style.date}>{batchData['deliveryDate']}</span>
+                        <span>Adresy / Paczki</span>
+                        <span className={Style.amount}>{orders.length} / {this.state.ordersAmount}</span>
+                        <span className={Style.date}>{this.state.deliveryDate}</span>
+                        <span>#{(this.state.batchID).toString().padStart(3, '0')}</span>
                     </div>
                     <DndProvider backend={HTML5Backend}>
                         <List ordersData={orders} updateRoute={(newRoute) => this.updateRoute(newRoute)}/>

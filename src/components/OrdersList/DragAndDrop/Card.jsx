@@ -56,7 +56,7 @@ export const Card = ({ id, data, index, moveCard }) => {
     return (
         <div ref={ref} className={Style.card} key={data.id} data-aid={data.address_id} style={{ backgroundColor: bgc, opacity }}>
             <span className={Style.address}>{data.street} {data.street_number} {(data.flat_number) ? '/ ' + data.flat_number : null}</span>
-            <span className={Style.details}>{data.amount}x {data.type} ({data.address_id})</span>
+            <span className={Style.details}>{data.amount}x {data.type} (#{(data.address_id).toString().padStart(3, '0')})</span>
         </div>
     )
 };
