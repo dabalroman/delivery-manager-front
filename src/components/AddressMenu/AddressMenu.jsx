@@ -77,9 +77,9 @@ class AddressMenu extends Component {
             return <div>Loading...</div>;
         } else {
             return (
-                <Container fluid className={Style.height100}>
-                    <Row noGutters className={Style.height100}>
-                        <Col className={Style.height100}>
+                <Container className={Style.height100}>
+                    <Row className={Style.height100} noGutters>
+                        <Col xs={6} className={Style.height100}>
                             <OrdersList
                                 orders={this.state.orders}
                                 ordersAmount={this.state.ordersAmount}
@@ -89,7 +89,7 @@ class AddressMenu extends Component {
                                 updateRoute={this.updateRoute}
                             />
                         </Col>
-                        <Col>
+                        <Col xs={6}>
                             <AddressDetails
                                 order={this.getActiveOrder()}
                             />

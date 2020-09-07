@@ -26,8 +26,7 @@ export const AddressDetails = ({order}) => (
                     <td>-</td>
                 </tr>
                 <tr>
-                    <td>💬 Komentarz klienta</td>
-                    <td>{order['comment']}</td>
+                    <td colSpan={2}>💬 Komentarz klienta <br/> <i>{order['comment']}</i></td>
                 </tr>
                 <tr>
                     <td>🆔 ID Zamówienia</td>
