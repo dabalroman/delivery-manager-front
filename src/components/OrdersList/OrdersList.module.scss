@@ -1,13 +1,14 @@
-$border-color: #bbb;
+$border-color: #dee2e6;
 
 .list{
     height: 100%;
     padding: 5px;
-    box-shadow: -0px 0px 10px $border-color;
+    //box-shadow: -0px 0px 10px #aaa;
     background-color: #fff;
     border-left: 1px solid $border-color;
     overflow-y: scroll;
     box-sizing: border-box;
+    z-index: 10;
 
     .head{
         text-align: center;
