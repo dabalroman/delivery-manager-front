@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Col, Container, Row} from "react-bootstrap";
-import OrdersList from "../OrdersList/OrdersList";
+import {OrdersList} from "../OrdersList/OrdersList";
 import {AddressDetails} from "../AddressDetails/AddressDetails";
 
 import Style from "./AddressMenu.module.css"
@@ -23,6 +23,12 @@ class AddressMenu extends Component {
 
         this.route = [];
         this.setActiveOrder = this.setActiveOrder.bind(this);
+        this.updateRoute = this.updateRoute.bind(this);
+    }
+
+    updateRoute(newRoute) {
+        this.route = newRoute.slice();
+        console.log(this.route);
     }
 
     setActiveOrder(orderID) {
@@ -80,6 +86,7 @@ class AddressMenu extends Component {
                                 deliveryDate={this.state.deliveryDate}
                                 batchID={this.state.batchID}
                                 setActiveOrder={this.setActiveOrder}
+                                updateRoute={this.updateRoute}
                             />
                         </Col>
                         <Col>
