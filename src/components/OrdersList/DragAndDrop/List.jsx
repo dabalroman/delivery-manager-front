@@ -45,6 +45,7 @@ export const List = (props) => {
                     flat_number: card['flat_number']
                 }}
                 moveCard={moveCard}
+                setActiveOrder={props.setActiveOrder}
             />
         )
     };

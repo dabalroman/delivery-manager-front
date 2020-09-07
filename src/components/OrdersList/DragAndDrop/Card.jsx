@@ -3,7 +3,7 @@ import {useDrag, useDrop} from 'react-dnd'
 import {ItemTypes} from './ItemTypes'
 import Style from "../OrdersList.module.css";
 
-export const Card = ({id, data, index, moveCard}) => {
+export const Card = ({id, data, index, moveCard, setActiveOrder}) => {
     const ref = useRef(null);
     const [, drop] = useDrop({
         accept: ItemTypes.CARD,
@@ -56,11 +56,12 @@ export const Card = ({id, data, index, moveCard}) => {
     return (
         <div ref={ref}
              className={Style.card}
-             key={data.id}
+             key={id}
              data-aid={data.address_id}
              style={{backgroundColor: bgc, opacity}}
+             onClick={() => {setActiveOrder(id)}}
         >
-            <span onClick={() => {console.log(data.address_id)}}
+            <span
                 className={Style.address}>{data.street} {data.street_number} {(data.flat_number) ? '/ ' + data.flat_number : null}</span>
             <span
                 className={Style.details}>{data.amount}x {data.type} (#{(data.address_id).toString().padStart(3, '0')})</span>

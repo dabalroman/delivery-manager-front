@@ -23,7 +23,7 @@ class OrdersList extends Component {
                     <List
                         ordersData={this.props.orders}
                         updateRoute={(newRoute) => this.updateRoute(newRoute)}
-                        setActiveAddress={(selectedAddress) => this.setActiveAddress(selectedAddress)}
+                        setActiveOrder={this.props.setActiveOrder}
                     />
                 </DndProvider>
             </div>
