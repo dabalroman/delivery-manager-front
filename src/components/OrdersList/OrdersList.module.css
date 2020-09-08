@@ -1,14 +1,15 @@
 .list {
-  width: 250px;
   height: 100%;
   padding: 5px;
-  box-shadow: 0px 0px 10px #bbb;
   background-color: #fff;
-  border-left: 1px solid #bbb;
+  border-left: 1px solid #dee2e6;
+  overflow-y: scroll;
+  box-sizing: border-box;
+  z-index: 10;
 }
 .list .head {
   text-align: center;
-  border-bottom: 1px solid #bbb;
+  border-bottom: 1px solid #dee2e6;
   padding-bottom: 1em;
 }
 .list .head .date {
@@ -21,7 +22,7 @@
 .list .card {
   box-sizing: border-box;
   padding: 4px;
-  border-bottom: 1px solid #bbb;
+  border-bottom: 1px solid #dee2e6;
 }
 .list .card .address {
   display: block;
