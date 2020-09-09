@@ -14,7 +14,20 @@ const center = {
 };
 
 class Map extends Component {
+    constructor(props) {
+        super(props);
+
+        console.log(props.orders);
+    }
+
     render() {
+        const markers = this.props.orders.map((order) => {
+            let [lat, lng] = order['geo_cord'].split(',').map(x => parseFloat(x));
+            return (
+                <Marker position={{lat: lat, lng: lng}} label={order['id'].toString()} key={order['id']}/>
+            );
+        });
+
         return (
             <LoadScript
                 googleMapsApiKey={apiKey}
@@ -26,10 +39,7 @@ class Map extends Component {
                     zoom={13}
                     options={{styles: mapStyle}}
                 >
-                    <Marker
-                        position={center}
-                        // label="X"
-                    />
+                    {markers}
                 </GoogleMap>
             </LoadScript>
         )

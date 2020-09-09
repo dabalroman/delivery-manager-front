@@ -30,4 +30,4 @@ yarn-error.log*
 
 *.module.*.map
 *.css
-/src/components/Map/api_key.jsx
+/src/components/MapScreen/Map/api_key.jsx

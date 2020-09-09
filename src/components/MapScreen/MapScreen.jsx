@@ -1,11 +1,12 @@
 import React, {Component} from "react";
 import {Col, Container, Row} from "react-bootstrap";
-import {OrdersList} from "../OrdersList/OrdersList";
-import {AddressDetails} from "../AddressDetails/AddressDetails";
+import {OrdersList} from "./OrdersList/OrdersList";
+import {AddressDetails} from "./AddressDetails/AddressDetails";
 
-import Style from "./AddressMenu.module.css"
+import Style from "./MapScreen.module.css"
+import Map from "./Map/Map";
 
-class AddressMenu extends Component {
+class MapScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,6 +16,8 @@ class AddressMenu extends Component {
             ordersAmount: null,
             activeOrderID: null,
             activeOrderTabPos: 0,
+            hoverOrderID: null,
+            hoverOrderTabID: 0,
             batchID: null,
             newAddressesAmount: null,
             knownAddressesAmount: null,
@@ -79,7 +82,12 @@ class AddressMenu extends Component {
             return (
                 <Container className={Style.height100}>
                     <Row className={Style.height100} noGutters>
-                        <Col xs={6} className={Style.height100}>
+                        <Col xs={8} className={Style.height100}>
+                            <Map
+                                orders={this.state.orders}
+                            />
+                        </Col>
+                        <Col xs={2} className={Style.height100}>
                             <OrdersList
                                 orders={this.state.orders}
                                 ordersAmount={this.state.ordersAmount}
@@ -89,7 +97,7 @@ class AddressMenu extends Component {
                                 updateRoute={this.updateRoute}
                             />
                         </Col>
-                        <Col xs={6}>
+                        <Col xs={2}>
                             <AddressDetails
                                 order={this.getActiveOrder()}
                             />
@@ -101,4 +109,4 @@ class AddressMenu extends Component {
     }
 }
 
-export default AddressMenu;
+export default MapScreen;
