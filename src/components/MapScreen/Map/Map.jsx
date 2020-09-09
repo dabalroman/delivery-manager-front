@@ -14,12 +14,6 @@ const center = {
 };
 
 class Map extends Component {
-    constructor(props) {
-        super(props);
-
-        console.log(props.orders);
-    }
-
     render() {
         const markers = this.props.orders.map((order) => {
             let [lat, lng] = order['geo_cord'].split(',').map(x => parseFloat(x));
@@ -27,6 +21,8 @@ class Map extends Component {
                 <Marker position={{lat: lat, lng: lng}} label={order['id'].toString()} key={order['id']}/>
             );
         });
+
+        console.log("MAP RENDER");
 
         return (
             <LoadScript
