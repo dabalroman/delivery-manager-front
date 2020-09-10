@@ -59,12 +59,16 @@ export const Card = ({id, data, index, moveCard, setActiveOrder}) => {
              key={id}
              data-aid={data.address_id}
              style={{backgroundColor: bgc, opacity}}
-             onClick={() => {setActiveOrder(id)}}
+             onClick={() => {
+                 setActiveOrder(id)
+             }}
         >
-            <span
-                className={Style.address}>{data.street} {data.street_number} {(data.flat_number) ? '/ ' + data.flat_number : null}</span>
-            <span
-                className={Style.details}>{data.amount}x {data.type} (#{(data.address_id).toString().padStart(3, '0')})</span>
+            <span className={Style.address}>
+                {data.street} {data.street_number} {(data.flat_number) ? '/ ' + data.flat_number : null}
+            </span>
+            <span className={Style.details}>
+                {data.amount}x {data.type} (#{(data.address_id).toString().padStart(3, '0')})
+            </span>
         </div>
     )
 };

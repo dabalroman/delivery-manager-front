@@ -13,6 +13,7 @@ class MapScreen extends Component {
             error: null,
             isLoaded: false,
             orders: [],
+            orderAddressMap: [],
             ordersAmount: null,
             activeOrderID: null,
             activeOrderTabPos: 0,
@@ -46,12 +47,28 @@ class MapScreen extends Component {
         return this.state.orders[this.state.activeOrderTabPos];
     }
 
+    buildOrderAddressMap(ordersArray) {
+        let tempMap = [];
+
+        for (let i = 0; i < ordersArray.length; i++) {
+            tempMap.push({
+                order_id: ordersArray[i]["id"],
+                route_position: i,
+                address_id: ordersArray[i]["address_id"],
+                coordinates: ordersArray[i]["geo_cord"]
+            });
+        }
+
+        return tempMap;
+    }
+
     componentDidMount() {
         fetch("http://localhost:8000/batch/1", {method: 'GET'})
             .then(res => res.json())
             .then(
                 (result) => {
-                    console.log(result);
+                    console.log(result.data);
+
                     this.setState({
                         isLoaded: true,
                         batchID: result.data['batch_id'],
@@ -60,6 +77,7 @@ class MapScreen extends Component {
                         newAddressesAmount: result.data['new_addresses_amount'],
                         knownAddressesAmount: result.data['known_addresses_amount'],
                         orders: result.data['orders'],
+                        orderAddressMap: this.buildOrderAddressMap(result.data['orders']).slice()
                     });
 
                     this.setActiveOrder(result.data['orders'][0]['id']);
@@ -84,7 +102,7 @@ class MapScreen extends Component {
                     <Row className={Style.height100} noGutters>
                         <Col xs={8} className={Style.height100}>
                             <Map
-                                orders={this.state.orders}
+                                orderAddressMap={this.state.orderAddressMap}
                             />
                         </Col>
                         <Col xs={2} className={Style.height100}>

@@ -15,10 +15,10 @@ const center = {
 
 class Map extends Component {
     render() {
-        const markers = this.props.orders.map((order) => {
-            let [lat, lng] = order['geo_cord'].split(',').map(x => parseFloat(x));
+        const markers = this.props.orderAddressMap.map((order) => {
+            let [lat, lng] = order.coordinates.split(',').map(x => parseFloat(x));
             return (
-                <Marker position={{lat: lat, lng: lng}} label={order['id'].toString()} key={order['id']}/>
+                <Marker position={{lat: lat, lng: lng}} label={order.order_id.toString()} key={order.order_id}/>
             );
         });
 
