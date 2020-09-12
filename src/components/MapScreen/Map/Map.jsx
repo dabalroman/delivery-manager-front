@@ -22,8 +22,6 @@ class Map extends Component {
             );
         });
 
-        console.log("MAP RENDER");
-
         return (
             <LoadScript
                 googleMapsApiKey={apiKey}

@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {Col, Container, Row} from "react-bootstrap";
 import {OrdersList} from "./OrdersList/OrdersList";
 import {AddressDetails} from "./AddressDetails/AddressDetails";
+import Batch from "../../api/Batch";
 
 import Style from "./MapScreen.module.css"
 import Map from "./Map/Map";
@@ -32,7 +33,7 @@ class MapScreen extends Component {
 
     updateRoute(newRoute) {
         this.route = newRoute.slice();
-        console.log(this.route);
+        console.log(this.route.join(','));
     }
 
     setActiveOrder(orderID) {
@@ -47,15 +48,19 @@ class MapScreen extends Component {
         return this.state.orders[this.state.activeOrderTabPos];
     }
 
-    buildOrderAddressMap(ordersArray) {
+    /**
+     * @param {Order[]} ordersArray
+     * @param {number[]|null} route
+     */
+    buildOrderAddressMap(ordersArray, route = null) {
         let tempMap = [];
 
         for (let i = 0; i < ordersArray.length; i++) {
             tempMap.push({
-                order_id: ordersArray[i]["id"],
-                route_position: i,
-                address_id: ordersArray[i]["address_id"],
-                coordinates: ordersArray[i]["geo_cord"]
+                order_id: ordersArray[i].id,
+                route_position: (route) ? route.indexOf(ordersArray[i].id) : i,
+                address_id: ordersArray[i].address_id,
+                coordinates: ordersArray[i].geo_cord
             });
         }
 
@@ -63,32 +68,30 @@ class MapScreen extends Component {
     }
 
     componentDidMount() {
-        fetch("http://localhost:8000/batch/1", {method: 'GET'})
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    console.log(result.data);
+        Batch.get(1, (data) => {
+            console.log(data);
 
-                    this.setState({
-                        isLoaded: true,
-                        batchID: result.data['batch_id'],
-                        deliveryDate: result.data['delivery_date'],
-                        ordersAmount: result.data['orders_amount'],
-                        newAddressesAmount: result.data['new_addresses_amount'],
-                        knownAddressesAmount: result.data['known_addresses_amount'],
-                        orders: result.data['orders'],
-                        orderAddressMap: this.buildOrderAddressMap(result.data['orders']).slice()
-                    });
+            this.route = data.routes[0].addresses_ids.split(',').map(x => parseInt(x));
+            console.log(this.route);
 
-                    this.setActiveOrder(result.data['orders'][0]['id']);
-                },
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    });
-                }
-            )
+            this.setState({
+                isLoaded: true,
+                batchID: data.batch_id,
+                deliveryDate: data.delivery_date,
+                ordersAmount: data.orders_amount,
+                newAddressesAmount: data.new_addresses_amount,
+                knownAddressesAmount: data.known_addresses_amount,
+                orders: data.orders,
+                orderAddressMap: this.buildOrderAddressMap(data.orders, this.route).slice()
+            });
+
+            this.setActiveOrder(data.orders[0].id);
+        }, (error) => {
+            this.setState({
+                isLoaded: true,
+                error: {message: error}
+            });
+        });
     }
 
     render() {
