@@ -1,24 +1,61 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import {Card} from './Card'
 import update from 'immutability-helper'
+import {areArraysEqual} from '../../../../utils/array';
 
 export const List = (props) => {
-    const [cards, setCards] = useState(props.ordersData);
-    const updateRoute = props.updateRoute;
 
+    /**
+     * Get orders array and arrange it by order defined by order's id
+     * @param {Order[]} orders
+     * @param {number[]} ordersArrangement
+     * @return {Order[]}
+     */
+    const arrangeOrdersByOrdersArrangement = (orders, ordersArrangement) => {
+        return ordersArrangement.map(orderID => orders[orders.findIndex(el => el['id'] === orderID)])
+    }
+
+    const [orders, setOrderCards] = useState(arrangeOrdersByOrdersArrangement(props.orders, props.ordersArrangement));
+    const updateOrdersArrangement = props.updateOrdersArrangement;
+    const ordersArrangement = useRef(props.ordersArrangement.slice());
+    const firstRender = useRef(true);
+
+    /**
+     * Watch for external orders arrangement changes
+     */
     useEffect(() => {
+        if(areArraysEqual(ordersArrangement.current, props.ordersArrangement)){
+            return;
+        }
+        
+        ordersArrangement.current = props.ordersArrangement;
+        setOrderCards(arrangeOrdersByOrdersArrangement(props.orders, props.ordersArrangement));
+    }, [props.ordersArrangement, props.orders])
+
+    /**
+     * Update external orders arrangement after timeout
+     */
+    useEffect(() => {
+        if(firstRender.current) {
+            firstRender.current = false;
+            return;
+        }
+
+        let arrangement = createArrangementMap(orders);
         const timeout = setTimeout(() => {
-            updateRoute(createRouteArray(cards));
+            ordersArrangement.current = createArrangementMap(orders);
+            updateOrdersArrangement(arrangement);
         }, 5000);
 
         return () => clearTimeout(timeout);
-    },[cards, updateRoute]);
+    },[orders, updateOrdersArrangement]);
+
 
     const moveCard = useCallback(
         (dragIndex, hoverIndex) => {
-            const dragCard = cards[dragIndex];
-            setCards(
-                update(cards, {
+            const dragCard = orders[dragIndex];
+            setOrderCards(
+                update(orders, {
                     $splice: [
                         [dragIndex, 1],
                         [hoverIndex, 0, dragCard],
@@ -26,35 +63,37 @@ export const List = (props) => {
                 }),
             );
         },
-        [cards],
+        [orders],
     );
 
-    const renderCard = (card, index) => {
+    /**
+     * Get order ids from orders array in it's current arrangement
+     * @param {Order[]} orders
+     * @return {number[]}
+     */
+    const createArrangementMap = (orders) => {
+        return orders.map(order => order.id);
+    };
+
+    /**
+     * @param {Order} order
+     * @param {number} index
+     * @return {JSX.Element}
+     */
+    const renderCard = (order, index) => {
         return (
             <Card
-                key={card['id']}
+                key={order.id}
+                id={order.id}
+                order={order}
                 index={index}
-                id={card['id']}
-                data={{
-                    type: card['type'],
-                    amount: card['amount'],
-                    address_id: card['address_id'],
-                    city: card['city'],
-                    street: card['street'],
-                    street_number: card['street_number'],
-                    flat_number: card['flat_number']
-                }}
                 moveCard={moveCard}
                 setActiveOrder={props.setActiveOrder}
             />
         )
     };
 
-    const createRouteArray = (cards) => {
-        return cards.map(card => card.address_id);
-    };
-
     return (
-        <div>{cards.map((card, i) => renderCard(card, i))}</div>
+        <div>{orders.map((order, i) => renderCard(order, i))}</div>
     )
 };

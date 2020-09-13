@@ -3,7 +3,15 @@ import {useDrag, useDrop} from 'react-dnd'
 import {ItemTypes} from './ItemTypes'
 import Style from "../OrdersList.module.css";
 
-export const Card = ({id, data, index, moveCard, setActiveOrder}) => {
+/**
+ * @param {number} id
+ * @param {Order} order
+ * @param {number} index
+ * @param {function} moveCard
+ * @param {function} setActiveOrder
+ * @constructor
+ */
+export const Card = ({id, order, index, moveCard, setActiveOrder}) => {
     const ref = useRef(null);
     const [, drop] = useDrop({
         accept: ItemTypes.CARD,
@@ -57,17 +65,17 @@ export const Card = ({id, data, index, moveCard, setActiveOrder}) => {
         <div ref={ref}
              className={Style.card}
              key={id}
-             data-aid={data.address_id}
+             data-aid={order.address_id}
              style={{backgroundColor: bgc, opacity}}
              onClick={() => {
                  setActiveOrder(id)
              }}
         >
             <span className={Style.address}>
-                {data.street} {data.street_number} {(data.flat_number) ? '/ ' + data.flat_number : null}
+                {order.street} {order.street_number} {(order.flat_number) ? '/ ' + order.flat_number : null}
             </span>
             <span className={Style.details}>
-                {data.amount}x {data.type} (#{(data.address_id).toString().padStart(3, '0')})
+                {order.amount}x {order.type} (#{(order.address_id).toString().padStart(3, '0')})
             </span>
         </div>
     )

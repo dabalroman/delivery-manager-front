@@ -1,11 +1,11 @@
 import React, {Component} from "react";
 import {Col, Container, Row} from "react-bootstrap";
 import {OrdersList} from "./OrdersList/OrdersList";
-import {AddressDetails} from "./AddressDetails/AddressDetails";
-import Batch from "../../api/Batch";
-
-import Style from "./MapScreen.module.css"
+import {OrderDetails} from "./OrderDetails/OrderDetails";
 import Map from "./Map/Map";
+import BatchApi from "../../api/BatchApi";
+import RouteApi from "../../api/RouteApi";
+import Style from "./MapScreen.module.css"
 
 class MapScreen extends Component {
     constructor(props) {
@@ -14,28 +14,51 @@ class MapScreen extends Component {
             error: null,
             isLoaded: false,
             orders: [],
+            ordersArrangement: [],
             orderAddressMap: [],
             ordersAmount: null,
             activeOrderID: null,
             activeOrderTabPos: 0,
             hoverOrderID: null,
             hoverOrderTabID: 0,
-            batchID: null,
+            batchId: null,
+            routeId: null,
             newAddressesAmount: null,
             knownAddressesAmount: null,
             deliveryDate: null,
         };
 
-        this.route = [];
         this.setActiveOrder = this.setActiveOrder.bind(this);
-        this.updateRoute = this.updateRoute.bind(this);
+        this.updateOrdersArrangement = this.updateOrdersArrangement.bind(this);
     }
 
-    updateRoute(newRoute) {
-        this.route = newRoute.slice();
-        console.log(this.route.join(','));
+    /**
+     * Update order arrangement
+     * @param newArrangement
+     */
+    updateOrdersArrangement(newArrangement) {
+        //TODO: FIX - double execution on startup
+
+        this.setState({
+            ordersArrangement: newArrangement.slice()
+        });
+
+        RouteApi.put(
+            this.state.routeId,
+            {addresses_ids: newArrangement.join(',')},
+            () => {
+                console.log("OK")
+            },
+            () => console.log("ERROR")
+        );
+
+        console.log("ORDERS ARRANGEMENT UPDATED");
     }
 
+    /**
+     * Set active order to display in details window
+     * @param {number} orderID
+     */
     setActiveOrder(orderID) {
         let orderTabPos = this.state.orders.findIndex(el => el['id'] === orderID);
         this.setState({
@@ -44,6 +67,10 @@ class MapScreen extends Component {
         })
     }
 
+    /**
+     * Return active order
+     * @return {Order}
+     */
     getActiveOrder() {
         return this.state.orders[this.state.activeOrderTabPos];
     }
@@ -68,21 +95,23 @@ class MapScreen extends Component {
     }
 
     componentDidMount() {
-        Batch.get(1, (data) => {
+        BatchApi.get(1, (data) => {
             console.log(data);
 
-            this.route = data.routes[0].addresses_ids.split(',').map(x => parseInt(x));
-            console.log(this.route);
+            let route = data.routes[0].addresses_ids.split(',').map(x => parseInt(x));
+            console.log(route);
 
             this.setState({
                 isLoaded: true,
-                batchID: data.batch_id,
+                batchId: data.batch_id,
                 deliveryDate: data.delivery_date,
                 ordersAmount: data.orders_amount,
                 newAddressesAmount: data.new_addresses_amount,
                 knownAddressesAmount: data.known_addresses_amount,
                 orders: data.orders,
-                orderAddressMap: this.buildOrderAddressMap(data.orders, this.route).slice()
+                ordersArrangement: route,
+                orderAddressMap: this.buildOrderAddressMap(data.orders, route).slice(),
+                routeId: data.routes[0].id
             });
 
             this.setActiveOrder(data.orders[0].id);
@@ -111,15 +140,16 @@ class MapScreen extends Component {
                         <Col xs={2} className={Style.height100}>
                             <OrdersList
                                 orders={this.state.orders}
+                                ordersArrangement={this.state.ordersArrangement}
                                 ordersAmount={this.state.ordersAmount}
                                 deliveryDate={this.state.deliveryDate}
-                                batchID={this.state.batchID}
+                                batchId={this.state.batchId}
                                 setActiveOrder={this.setActiveOrder}
-                                updateRoute={this.updateRoute}
+                                updateOrdersArrangement={this.updateOrdersArrangement}
                             />
                         </Col>
                         <Col xs={2}>
-                            <AddressDetails
+                            <OrderDetails
                                 order={this.getActiveOrder()}
                             />
                         </Col>

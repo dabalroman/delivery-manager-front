@@ -10,12 +10,13 @@ export const OrdersList = (props) => (
             <span>Adresy / Paczki</span>
             <span className={Style.amount}>{props.orders.length} / {props.ordersAmount}</span>
             <span className={Style.date}>{props.deliveryDate}</span>
-            <span>#{(props.batchID).toString().padStart(3, '0')}</span>
+            <span>#{(props.batchId).toString().padStart(3, '0')}</span>
         </div>
         <DndProvider backend={HTML5Backend}>
             <List
-                ordersData={props.orders}
-                updateRoute={props.updateRoute}
+                orders={props.orders}
+                ordersArrangement={props.ordersArrangement}
+                updateOrdersArrangement={props.updateOrdersArrangement}
                 setActiveOrder={props.setActiveOrder}
             />
         </DndProvider>

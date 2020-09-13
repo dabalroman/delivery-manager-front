@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React from "react";
 import Table from 'react-bootstrap/Table';
-import Style from "./AddressDetails.module.css";
+import Style from "./OrderDetails.module.css";
 
-export const AddressDetails = ({order}) => (
+export const OrderDetails = ({order}) => (
         <div className={Style.module}>
             <div className={Style.address}>
                 <span>{order['street']} {order['street_number']} {(order['flat_number']) ? '/ ' + order['flat_number'] : null}</span>
