@@ -1,6 +1,6 @@
 import Api from "./Api";
 
-export default class Batch extends Api{
+export default class BatchApi extends Api{
     /**
      * @callback onSuccessBatch
      * @param {BatchData} data
