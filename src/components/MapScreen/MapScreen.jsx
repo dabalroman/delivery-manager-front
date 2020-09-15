@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Col, Container, Row} from "react-bootstrap";
 import {OrdersList} from "./OrdersList/OrdersList";
-import {OrderDetails} from "./OrderDetails/OrderDetails";
+import OrderDetails from "./OrderDetails/OrderDetails";
 import Map from "./Map/Map";
 import BatchApi from "../../api/BatchApi";
 import RouteApi from "../../api/RouteApi";
