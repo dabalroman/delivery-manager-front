@@ -15,9 +15,8 @@ class MapScreen extends Component {
             isLoaded: false,
             orders: [],
             ordersArrangement: [],
-            orderAddressMap: [],
             ordersAmount: null,
-            activeOrderID: null,
+            activeOrderId: null,
             activeOrderTabPos: 0,
             hoverOrderID: null,
             hoverOrderTabID: 0,
@@ -62,7 +61,7 @@ class MapScreen extends Component {
     setActiveOrder(orderID) {
         let orderTabPos = this.state.orders.findIndex(el => el['id'] === orderID);
         this.setState({
-            activeOrderID: orderID,
+            activeOrderId: orderID,
             activeOrderTabPos: orderTabPos
         })
     }
@@ -73,25 +72,6 @@ class MapScreen extends Component {
      */
     getActiveOrder() {
         return this.state.orders[this.state.activeOrderTabPos];
-    }
-
-    /**
-     * @param {Order[]} ordersArray
-     * @param {number[]|null} route
-     */
-    buildOrderAddressMap(ordersArray, route = null) {
-        let tempMap = [];
-
-        for (let i = 0; i < ordersArray.length; i++) {
-            tempMap.push({
-                order_id: ordersArray[i].id,
-                route_position: (route) ? route.indexOf(ordersArray[i].id) : i,
-                address_id: ordersArray[i].address_id,
-                coordinates: ordersArray[i].geo_cord
-            });
-        }
-
-        return tempMap;
     }
 
     componentDidMount() {
@@ -110,7 +90,6 @@ class MapScreen extends Component {
                 knownAddressesAmount: data.known_addresses_amount,
                 orders: data.orders,
                 ordersArrangement: route,
-                orderAddressMap: this.buildOrderAddressMap(data.orders, route).slice(),
                 routeId: data.routes[0].id
             });
 
@@ -134,7 +113,10 @@ class MapScreen extends Component {
                     <Row className={Style.height100} noGutters>
                         <Col xs={8} className={Style.height100}>
                             <Map
-                                orderAddressMap={this.state.orderAddressMap}
+                                orders={this.state.orders}
+                                arrangement={this.state.ordersArrangement}
+                                activeOrderId={this.state.activeOrderId}
+                                setActiveOrder={this.setActiveOrder}
                             />
                         </Col>
                         <Col xs={2} className={Style.height100}>
