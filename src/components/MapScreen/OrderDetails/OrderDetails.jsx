@@ -26,7 +26,11 @@ export const OrderDetails = ({order}) => (
                     <td className={Style.cellRight}>-</td>
                 </tr>
                 <tr>
-                    <td colSpan={2}>💬 Komentarz klienta <br/> <i>{order['comment']}</i></td>
+                    <td className={Style.cellLeft}>📞 Telefon</td>
+                    <td className={Style.cellRight}>{order['phone']}</td>
+                </tr>
+                <tr>
+                    <td colSpan={2}>💬 Komentarz klienta <br/><i>{order['comment']}</i></td>
                 </tr>
                 <tr>
                     <td className={Style.cellLeft}>🆔 ID Zamówienia</td>
