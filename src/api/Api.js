@@ -1,4 +1,5 @@
 export default class Api {
+    ADDRESS = 'address';
     BATCH = 'batch';
     ROUTE = 'route';
 
@@ -34,7 +35,7 @@ export default class Api {
     /**
      * @param {string} endpoint
      * @param {number} resourceId
-     * @param {array} data
+     * @param {array|Object} data
      * @param {onSuccess} onSuccess
      * @param {onError} onError
      */
