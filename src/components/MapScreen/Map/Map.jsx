@@ -31,7 +31,7 @@ class Map extends Component {
         const markers = this.props.orders.map((order, index) => {
             let [lat, lng] = order.geo_cord.split(',').map(x => parseFloat(x));
             let active = order.id === this.props.activeOrderId;
-            console.log(order.id, this.props.activeOrderId)
+
             return (
                 <Marker
                     position={{lat: lat, lng: lng}}

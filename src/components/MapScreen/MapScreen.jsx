@@ -133,6 +133,7 @@ class MapScreen extends Component {
                         <Col xs={2}>
                             <OrderDetails
                                 order={this.getActiveOrder()}
+                                orderUpdated={() => this.forceUpdate()}
                             />
                         </Col>
                     </Row>

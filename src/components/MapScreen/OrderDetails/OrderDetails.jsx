@@ -2,27 +2,53 @@
 import React, {Component} from "react";
 import {Button, FormControl, InputGroup, Table} from "react-bootstrap";
 import Style from "./OrderDetails.module.css";
+import AddressApi from "../../../api/AddressApi";
 
 class OrderDetails extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            editMode: true,
+            editMode: false,
             editedOrder: null
         }
 
         this.setEditMode.bind(this);
+        this.currentOrder = {'id': this.props.order.address_id};
     }
 
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         return !this.state.editMode || !nextState.editMode;
     }
 
-    setEditMode(newEditMode){
-        this.setState({
-            editMode: newEditMode
-        });
+    setEditMode(newEditMode) {
+        if (this.state.editMode && !newEditMode) {
+            this.setState({
+                editMode: false
+            });
+
+            delete this.currentOrder.id;
+
+            //Update address in db and force rerender
+            if (Object.keys(this.currentOrder).length !== 0) {
+                AddressApi.put(this.props.order.address_id, this.currentOrder, () => {
+                    Object.assign(this.props.order, this.currentOrder);
+                    this.props.orderUpdated();
+                }, () => {
+
+                });
+            }
+        } else {
+            this.currentOrder = {'id': this.props.order.address_id};
+
+            this.setState({
+                editMode: true
+            });
+        }
+    }
+
+    editValue(field, value) {
+        this.currentOrder[field] = value;
     }
 
     renderDefault() {
@@ -42,11 +68,11 @@ class OrderDetails extends Component {
                     </tr>
                     <tr>
                         <td className={Style.cellLeft}>🔑 Kod domofonu</td>
-                        <td className={Style.cellRight}>{this.props.order.code}</td>
+                        <td className={Style.cellRight}>{this.props.order.code || '-'}</td>
                     </tr>
                     <tr>
                         <td className={Style.cellLeft}>🔼 Piętro</td>
-                        <td className={Style.cellRight}>-</td>
+                        <td className={Style.cellRight}>{this.props.order.floor || '-'}</td>
                     </tr>
                     <tr>
                         <td className={Style.cellLeft}>📞 Telefon</td>
@@ -55,7 +81,7 @@ class OrderDetails extends Component {
                     <tr>
                         <td colSpan={2}>
                             <span className='d-block mb-1'>💬 Komentarz</span>
-                            <i>{this.props.order.comment}</i>
+                            <i>{this.props.order.comment || '-'}</i>
                         </td>
                     </tr>
                     <tr>
@@ -90,7 +116,8 @@ class OrderDetails extends Component {
                             <td className={Style.cellLeft}>🏙 Miasto</td>
                             <td className={Style.cellRight}>
                                 <FormControl
-                                    value={this.props.order.city || ''}
+                                    defaultValue={this.props.order.city || ''}
+                                    onChange={(x) => this.editValue('city', x.target.value)}
                                 />
                             </td>
                         </tr>
@@ -98,7 +125,8 @@ class OrderDetails extends Component {
                             <td className={Style.cellLeft}>🚗 Ulica</td>
                             <td className={Style.cellRight}>
                                 <FormControl
-                                    value={this.props.order.street || ''}
+                                    defaultValue={this.props.order.street || ''}
+                                    onChange={(x) => this.editValue('street', x.target.value)}
                                 />
                             </td>
                         </tr>
@@ -106,33 +134,38 @@ class OrderDetails extends Component {
                             <td className={Style.cellLeft}>🏠 Numer domu</td>
                             <td className={Style.cellRight}>
                                 <FormControl
-                                    value={this.props.order.street_number || ''}
+                                    defaultValue={this.props.order.street_number || ''}
+                                    onChange={(x) => this.editValue('street_number', x.target.value)}
                                 />
                             </td>
                         </tr>
                         <tr>
                             <td className={Style.cellLeft}>🚪 Mieszkanie</td>
                             <td className={Style.cellRight}><FormControl
-                                value={this.props.order.flat_number || ''}
+                                defaultValue={this.props.order.flat_number || ''}
+                                onChange={(x) => this.editValue('flat_number', x.target.value)}
                             />
                             </td>
                         </tr>
                         <tr>
                             <td className={Style.cellLeft}>🔑 Kod domofonu</td>
                             <td className={Style.cellRight}><FormControl
-                                value={this.props.order.code || ''}
+                                defaultValue={this.props.order.code || ''}
+                                onChange={(x) => this.editValue('code', x.target.value)}
                             /></td>
                         </tr>
                         <tr>
                             <td className={Style.cellLeft}>🔼 Piętro</td>
                             <td className={Style.cellRight}><FormControl
-                                value={this.props.order.floor || ''}
+                                defaultValue={this.props.order.floor || ''}
+                                onChange={(x) => this.editValue('floor', x.target.value)}
                             /></td>
                         </tr>
                         <tr>
                             <td className={Style.cellLeft}>📞 Telefon</td>
                             <td className={Style.cellRight}><FormControl
-                                value={this.props.order.phone || ''}
+                                defaultValue={this.props.order.phone || ''}
+                                onChange={(x) => this.editValue('phone', x.target.value)}
                             /></td>
                         </tr>
                         <tr>
@@ -140,7 +173,8 @@ class OrderDetails extends Component {
                                 <span className='d-block mb-2'>💬 Komentarz</span>
                                 <FormControl
                                     as="textarea"
-                                    value={this.props.order.comment || ''}
+                                    defaultValue={this.props.order.comment || ''}
+                                    onChange={(x) => this.editValue('comment', x.target.value)}
                                 />
                             </td>
                         </tr>
