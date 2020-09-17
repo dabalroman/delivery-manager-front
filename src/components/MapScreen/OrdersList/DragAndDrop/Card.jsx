@@ -7,11 +7,12 @@ import Style from "../OrdersList.module.css";
  * @param {number} id
  * @param {Order} order
  * @param {number} index
+ * @param {boolean} active
  * @param {function} moveCard
  * @param {function} setActiveOrder
  * @constructor
  */
-export const Card = ({id, order, index, moveCard, setActiveOrder}) => {
+export const Card = ({id, order, index, active, moveCard, setActiveOrder}) => {
     const ref = useRef(null);
     const [, drop] = useDrop({
         accept: ItemTypes.CARD,
@@ -63,7 +64,7 @@ export const Card = ({id, order, index, moveCard, setActiveOrder}) => {
 
     return (
         <div ref={ref}
-             className={Style.card}
+             className={`${Style.card} ${active ? Style.active : ''}`}
              key={id}
              data-aid={order.address_id}
              style={{backgroundColor: bgc, opacity}}

@@ -122,6 +122,7 @@ class MapScreen extends Component {
                         <Col xs={2} className={Style.height100}>
                             <OrdersList
                                 orders={this.state.orders}
+                                activeOrderId={this.state.activeOrderId}
                                 ordersArrangement={this.state.ordersArrangement}
                                 ordersAmount={this.state.ordersAmount}
                                 deliveryDate={this.state.deliveryDate}

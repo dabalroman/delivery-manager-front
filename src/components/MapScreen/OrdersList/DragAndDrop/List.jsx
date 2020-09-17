@@ -81,12 +81,15 @@ export const List = (props) => {
      * @return {JSX.Element}
      */
     const renderCard = (order, index) => {
+        let active = props.activeOrderId === order.id;
+
         return (
             <Card
                 key={order.id}
                 id={order.id}
                 order={order}
                 index={index}
+                active={active}
                 moveCard={moveCard}
                 setActiveOrder={props.setActiveOrder}
             />
