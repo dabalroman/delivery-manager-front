@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import {GoogleMap, LoadScript, Marker} from '@react-google-maps/api';
-import {apiKey} from "./api_key";
+
+import {API_KEY} from "./api_key";
 import {mapStyle} from "./MapStyle";
+import {CHANGE_SOURCE} from "../MapScreen";
 
 import markerRedIcon from './../../../assets/icons/spotlight-poi-dotless-red.png';
 import markerBlueIcon from './../../../assets/icons/spotlight-poi-dotless-blue.png';
@@ -30,7 +32,7 @@ class Map extends Component {
     render() {
         const markers = this.props.orders.map((order, index) => {
             let [lat, lng] = order.geo_cord.split(',').map(x => parseFloat(x));
-            let active = order.id === this.props.activeOrderId;
+            let active = order.id === this.props.activeOrder.id;
 
             return (
                 <Marker
@@ -39,14 +41,14 @@ class Map extends Component {
                     key={order.id}
                     icon={active ? iconBlue : iconRed}
                     zIndex={active ? 1000 : index}
-                    onClick={() => {this.props.setActiveOrder(order.id)}}
+                    onClick={() => {this.props.setActiveOrder(order.id, CHANGE_SOURCE.MAP)}}
                 />
             );
         });
 
         return (
             <LoadScript
-                googleMapsApiKey={apiKey}
+                googleMapsApiKey={API_KEY}
             >
                 <GoogleMap
                     mapContainerStyle={containerStyle}

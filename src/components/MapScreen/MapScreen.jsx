@@ -1,13 +1,23 @@
 import React, {Component} from "react";
 import {Col, Container, Row} from "react-bootstrap";
+
 import {OrdersList} from "./OrdersList/OrdersList";
 import OrderDetails from "./OrderDetails/OrderDetails";
 import Map from "./Map/Map";
 import BatchApi from "../../api/BatchApi";
 import RouteApi from "../../api/RouteApi";
+
 import Style from "./MapScreen.module.css"
 
+export const CHANGE_SOURCE = {
+    DEFAULT: 0,
+    MAP: 1,
+    LIST: 2
+};
+
 class MapScreen extends Component {
+
+
     constructor(props) {
         super(props);
         this.state = {
@@ -16,8 +26,11 @@ class MapScreen extends Component {
             orders: [],
             ordersArrangement: [],
             ordersAmount: null,
-            activeOrderId: null,
-            activeOrderTabPos: 0,
+            activeOrder: {
+                id: 0,
+                tabPos: 0,
+                changeSource: null
+            },
             hoverOrderID: null,
             hoverOrderTabID: 0,
             batchId: null,
@@ -57,13 +70,17 @@ class MapScreen extends Component {
     /**
      * Set active order to display in details window
      * @param {number} orderID
+     * @param {int} source
      */
-    setActiveOrder(orderID) {
+    setActiveOrder(orderID, source) {
         let orderTabPos = this.state.orders.findIndex(el => el['id'] === orderID);
         this.setState({
-            activeOrderId: orderID,
-            activeOrderTabPos: orderTabPos
-        })
+            activeOrder: {
+                id: orderID,
+                tabPos: orderTabPos,
+                changeSource: source
+            },
+        });
     }
 
     /**
@@ -71,7 +88,7 @@ class MapScreen extends Component {
      * @return {Order}
      */
     getActiveOrder() {
-        return this.state.orders[this.state.activeOrderTabPos];
+        return this.state.orders[this.state.activeOrder.tabPos];
     }
 
     componentDidMount() {
@@ -93,7 +110,7 @@ class MapScreen extends Component {
                 routeId: data.routes[0].id
             });
 
-            this.setActiveOrder(data.orders[0].id);
+            this.setActiveOrder(data.orders[0].id, CHANGE_SOURCE.DEFAULT);
         }, (error) => {
             this.setState({
                 isLoaded: true,
@@ -115,14 +132,14 @@ class MapScreen extends Component {
                             <Map
                                 orders={this.state.orders}
                                 arrangement={this.state.ordersArrangement}
-                                activeOrderId={this.state.activeOrderId}
+                                activeOrder={this.state.activeOrder}
                                 setActiveOrder={this.setActiveOrder}
                             />
                         </Col>
                         <Col xs={2} className={Style.height100}>
                             <OrdersList
                                 orders={this.state.orders}
-                                activeOrderId={this.state.activeOrderId}
+                                activeOrder={this.state.activeOrder}
                                 ordersArrangement={this.state.ordersArrangement}
                                 ordersAmount={this.state.ordersAmount}
                                 deliveryDate={this.state.deliveryDate}

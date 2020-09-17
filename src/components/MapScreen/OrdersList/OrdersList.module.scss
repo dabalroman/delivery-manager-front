@@ -55,10 +55,14 @@ $active-color: #007bff;
             background-color: #eee;
             cursor: pointer;
         }
-
-        &:last-of-type{
-            border-bottom: none !important;
-        }
     }
+}
+
+.scrollOffset{
+    position: relative;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    bottom: calc(50vh - 24px);
 }
 

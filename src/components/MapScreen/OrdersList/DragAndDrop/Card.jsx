@@ -1,6 +1,8 @@
 import React, {useRef} from 'react'
 import {useDrag, useDrop} from 'react-dnd'
 import {ItemTypes} from './ItemTypes'
+import {CHANGE_SOURCE} from "../../MapScreen";
+
 import Style from "../OrdersList.module.css";
 
 /**
@@ -27,6 +29,7 @@ export const Card = ({id, order, index, active, moveCard, setActiveOrder}) => {
                 return
             }
             // Determine rectangle on screen
+            // noinspection JSUnresolvedFunction
             const hoverBoundingRect = ref.current?.getBoundingClientRect();
             // Get vertical middle
             const hoverMiddleY =
@@ -63,14 +66,14 @@ export const Card = ({id, order, index, active, moveCard, setActiveOrder}) => {
     drag(drop(ref));
 
     return (
-        <div ref={ref}
-             className={`${Style.card} ${active ? Style.active : ''}`}
-             key={id}
-             data-aid={order.address_id}
-             style={{backgroundColor: bgc, opacity}}
-             onClick={() => {
-                 setActiveOrder(id)
-             }}
+        <div
+            ref={ref}
+            className={`${Style.card} ${active ? Style.active : ''}`}
+            data-aid={order.address_id}
+            style={{backgroundColor: bgc, opacity}}
+            onClick={() => {
+                setActiveOrder(id, CHANGE_SOURCE.LIST)
+            }}
         >
             <span className={Style.address}>
                 {order.street} {order.street_number} {(order.flat_number) ? '/ ' + order.flat_number : null}

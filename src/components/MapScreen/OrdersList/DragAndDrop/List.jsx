@@ -1,7 +1,9 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react'
-import {Card} from './Card'
 import update from 'immutability-helper'
+import {Card} from './Card'
 import {areArraysEqual} from '../../../../utils/array';
+import Style from '../OrdersList.module.css'
+import {CHANGE_SOURCE} from "../../MapScreen";
 
 export const List = (props) => {
 
@@ -24,10 +26,10 @@ export const List = (props) => {
      * Watch for external orders arrangement changes
      */
     useEffect(() => {
-        if(areArraysEqual(ordersArrangement.current, props.ordersArrangement)){
+        if (areArraysEqual(ordersArrangement.current, props.ordersArrangement)) {
             return;
         }
-        
+
         ordersArrangement.current = props.ordersArrangement;
         setOrderCards(arrangeOrdersByOrdersArrangement(props.orders, props.ordersArrangement));
     }, [props.ordersArrangement, props.orders])
@@ -36,7 +38,7 @@ export const List = (props) => {
      * Update external orders arrangement after timeout
      */
     useEffect(() => {
-        if(firstRender.current) {
+        if (firstRender.current) {
             firstRender.current = false;
             return;
         }
@@ -48,7 +50,7 @@ export const List = (props) => {
         }, 5000);
 
         return () => clearTimeout(timeout);
-    },[orders, updateOrdersArrangement]);
+    }, [orders, updateOrdersArrangement]);
 
 
     const moveCard = useCallback(
@@ -75,24 +77,41 @@ export const List = (props) => {
         return orders.map(order => order.id);
     };
 
+    const refs = orders.reduce((acc, value) => {
+        acc[value.id] = React.createRef();
+        return acc;
+    }, {});
+
+    useEffect(() => {
+        if (refs[props.activeOrder.id] !== undefined && props.activeOrder.changeSource !== CHANGE_SOURCE.LIST) {
+            refs[props.activeOrder.id].current.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            });
+        }
+    }, [refs, props.activeOrder.id, props.activeOrder.changeSource]);
+
+
     /**
      * @param {Order} order
      * @param {number} index
      * @return {JSX.Element}
      */
     const renderCard = (order, index) => {
-        let active = props.activeOrderId === order.id;
+        let active = props.activeOrder.id === order.id;
 
         return (
-            <Card
-                key={order.id}
-                id={order.id}
-                order={order}
-                index={index}
-                active={active}
-                moveCard={moveCard}
-                setActiveOrder={props.setActiveOrder}
-            />
+            <div key={order.id}>
+                <div ref={refs[order.id]} className={Style.scrollOffset}/>
+                <Card
+                    id={order.id}
+                    order={order}
+                    index={index}
+                    active={active}
+                    moveCard={moveCard}
+                    setActiveOrder={props.setActiveOrder}
+                />
+            </div>
         )
     };
 

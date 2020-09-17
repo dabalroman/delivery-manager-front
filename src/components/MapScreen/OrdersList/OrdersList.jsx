@@ -15,7 +15,7 @@ export const OrdersList = (props) => (
         <DndProvider backend={HTML5Backend}>
             <List
                 orders={props.orders}
-                activeOrderId={props.activeOrderId}
+                activeOrder={props.activeOrder}
                 ordersArrangement={props.ordersArrangement}
                 updateOrdersArrangement={props.updateOrdersArrangement}
                 setActiveOrder={props.setActiveOrder}
