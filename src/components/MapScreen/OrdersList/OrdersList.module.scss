@@ -28,17 +28,34 @@ $active-color: #007bff;
 
     .card{
         //background-color: #eee;
+        display: flex;
         box-sizing: border-box;
         padding: 4px;
         border-bottom: 1px solid $border-color;
+        align-items: center;
 
         &.active{
             background-color: $active-color !important;
             color: #fff !important;
 
-            .details{
+            .details, .left{
                 color: #fff !important;
             }
+        }
+
+        .left{
+            width: 32px;
+            line-height: 32px;
+            text-align: center;
+            flex-shrink: 0;
+            margin-right: 4px;
+            color: #777;
+        }
+
+        .right{
+            border-left: 1px solid $border-color;
+            padding-left: 10px;
+            display: block;
         }
 
         .address{

@@ -75,12 +75,15 @@ export const Card = ({id, order, index, active, moveCard, setActiveOrder}) => {
                 setActiveOrder(id, CHANGE_SOURCE.LIST)
             }}
         >
-            <span className={Style.address}>
-                {order.street} {order.street_number} {(order.flat_number) ? '/ ' + order.flat_number : null}
-            </span>
-            <span className={Style.details}>
-                {order.amount}x {order.type} (#{(order.address_id).toString().padStart(3, '0')})
-            </span>
+            <div className={Style.left}>{index+1}</div>
+            <div className={Style.right}>
+                <span className={Style.address}>
+                    {order.street} {order.street_number} {(order.flat_number) ? '/ ' + order.flat_number : null}
+                </span>
+                <span className={Style.details}>
+                    {order.amount}x {order.type} (#{(order.address_id).toString().padStart(3, '0')})
+                </span>
+            </div>
         </div>
     )
 };

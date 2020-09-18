@@ -30,17 +30,21 @@ const iconBlue = {
 
 class Map extends Component {
     render() {
-        const markers = this.props.orders.map((order, index) => {
+        //Create inverted arrangement array (order.id: position)
+        let labelMap = this.props.arrangement.reduce((acc, val, index) => {acc[val] = index; return acc}, {});
+
+        const markers = this.props.orders.map((order) => {
             let [lat, lng] = order.geo_cord.split(',').map(x => parseFloat(x));
             let active = order.id === this.props.activeOrder.id;
+            let labelNumber = labelMap[order.id] + 1;
 
             return (
                 <Marker
                     position={{lat: lat, lng: lng}}
-                    label={{color: '#fff', text: order.id.toString()}}
+                    label={{color: '#fff', text: labelNumber.toString()}}
                     key={order.id}
                     icon={active ? iconBlue : iconRed}
-                    zIndex={active ? 1000 : index}
+                    zIndex={active ? 1000 : labelNumber}
                     onClick={() => {this.props.setActiveOrder(order.id, CHANGE_SOURCE.MAP)}}
                 />
             );
