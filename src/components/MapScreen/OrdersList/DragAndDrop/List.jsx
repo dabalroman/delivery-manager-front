@@ -14,7 +14,7 @@ export const List = (props) => {
      * @return {Order[]}
      */
     const arrangeOrdersByOrdersArrangement = (orders, ordersArrangement) => {
-        return ordersArrangement.map(orderID => orders[orders.findIndex(el => el['id'] === orderID)])
+        return ordersArrangement.map(orderID => orders.find(el => el['id'] === orderID))
     }
 
     const [orders, setOrderCards] = useState(arrangeOrdersByOrdersArrangement(props.orders, props.ordersArrangement));

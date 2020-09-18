@@ -8,6 +8,8 @@ import BatchApi from "../../api/BatchApi";
 import RouteApi from "../../api/RouteApi";
 
 import Style from "./MapScreen.module.css"
+import {NavigationBar} from "./NavigationBar/NavigationBar";
+import Route from "../../data_models/Route";
 
 export const CHANGE_SOURCE = {
     DEFAULT: 0,
@@ -16,8 +18,6 @@ export const CHANGE_SOURCE = {
 };
 
 class MapScreen extends Component {
-
-
     constructor(props) {
         super(props);
         this.state = {
@@ -31,8 +31,8 @@ class MapScreen extends Component {
                 tabPos: 0,
                 changeSource: null
             },
-            hoverOrderID: null,
-            hoverOrderTabID: 0,
+            // hoverOrderID: null,
+            // hoverOrderTabID: 0,
             batchId: null,
             routeId: null,
             newAddressesAmount: null,
@@ -40,6 +40,7 @@ class MapScreen extends Component {
             deliveryDate: null,
         };
 
+        this.setActiveBatch = this.setActiveBatch.bind(this);
         this.setActiveOrder = this.setActiveOrder.bind(this);
         this.updateOrdersArrangement = this.updateOrdersArrangement.bind(this);
     }
@@ -57,7 +58,9 @@ class MapScreen extends Component {
 
         RouteApi.put(
             this.state.routeId,
-            {addresses_ids: newArrangement.join(',')},
+            {
+                addresses_ids: Route.transformOrdersArrangementToRoute(newArrangement, this.state.orders).join(',')
+            },
             () => {
                 console.log("OK")
             },
@@ -92,25 +95,33 @@ class MapScreen extends Component {
     }
 
     componentDidMount() {
-        BatchApi.get(1, (data) => {
+        this.setActiveBatch(1);
+    }
+
+    setActiveBatch(batchId){
+        BatchApi.get(batchId, (data) => {
             console.log(data);
 
             let route = data.routes[0].addresses_ids.split(',').map(x => parseInt(x));
-            console.log(route);
+            let arrangement = Route.transformRouteToOrdersArrangement(route, data.orders);
 
             this.setState({
                 isLoaded: true,
-                batchId: data.batch_id,
-                deliveryDate: data.delivery_date,
+                orders: data.orders.slice(),
+                ordersArrangement: arrangement,
                 ordersAmount: data.orders_amount,
+                activeOrder: {
+                    id: data.orders[0].id,
+                    tabPos: 0,
+                    changeSource: CHANGE_SOURCE.DEFAULT
+                },
+                batchId: data.batch_id,
+                routeId: data.routes[0].id,
                 newAddressesAmount: data.new_addresses_amount,
                 knownAddressesAmount: data.known_addresses_amount,
-                orders: data.orders,
-                ordersArrangement: route,
-                routeId: data.routes[0].id
+                deliveryDate: data.delivery_date
             });
 
-            this.setActiveOrder(data.orders[0].id, CHANGE_SOURCE.DEFAULT);
         }, (error) => {
             this.setState({
                 isLoaded: true,
@@ -127,7 +138,15 @@ class MapScreen extends Component {
         } else {
             return (
                 <Container className={Style.height100}>
-                    <Row className={Style.height100} noGutters>
+                    <Row className={Style.navBar} noGutters>
+                        <Col>
+                            <NavigationBar
+                                activeBatch={this.state.batchId}
+                                setActiveBatch={this.setActiveBatch}
+                            />
+                        </Col>
+                    </Row>
+                    <Row className={Style.screen} noGutters>
                         <Col xs={8} className={Style.height100}>
                             <Map
                                 orders={this.state.orders}

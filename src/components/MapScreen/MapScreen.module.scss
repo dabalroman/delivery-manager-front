@@ -1,3 +1,11 @@
 .height100 {
     height: 100%;
 }
+
+.navBar {
+    height: 48px;
+}
+
+.screen {
+    height: calc(100% - 48px);
+}
