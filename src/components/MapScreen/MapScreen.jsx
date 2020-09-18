@@ -20,24 +20,34 @@ export const CHANGE_SOURCE = {
 class MapScreen extends Component {
     constructor(props) {
         super(props);
+
+        /**
+         * @namespace state
+         * @property {Order[]} orders Order object
+         * @property {int[]} ordersArrangement Array with order ids arranged accordingly to address order in route
+         * @property {int} ordersAmount
+         * @property {?int} batchId Id of currently loaded batch
+         * @property {?int} routeId Id of currently loaded route
+         * @property {int} newAddressesAmount
+         * @property {int} knownAddressesAmount
+         * @property {string} deliveryDate
+         */
         this.state = {
             error: null,
             isLoaded: false,
             orders: [],
             ordersArrangement: [],
-            ordersAmount: null,
+            ordersAmount: 0,
             activeOrder: {
                 id: 0,
                 tabPos: 0,
                 changeSource: null
             },
-            // hoverOrderID: null,
-            // hoverOrderTabID: 0,
             batchId: null,
             routeId: null,
-            newAddressesAmount: null,
-            knownAddressesAmount: null,
-            deliveryDate: null,
+            newAddressesAmount: 0,
+            knownAddressesAmount: 0,
+            deliveryDate: '',
         };
 
         this.setActiveBatch = this.setActiveBatch.bind(this);
@@ -46,8 +56,8 @@ class MapScreen extends Component {
     }
 
     /**
-     * Update order arrangement
-     * @param newArrangement
+     * Update order arrangement locally and push to db
+     * @param {int[]} newArrangement Int array containing Orders IDs
      */
     updateOrdersArrangement(newArrangement) {
         //TODO: FIX - double execution on startup
@@ -94,10 +104,17 @@ class MapScreen extends Component {
         return this.state.orders[this.state.activeOrder.tabPos];
     }
 
+    /**
+     * Select active batch on startup
+     */
     componentDidMount() {
         this.setActiveBatch(1);
     }
 
+    /**
+     * Load all batch data including orders details and related routes
+     * @param {number} batchId BatchId to load from db
+     */
     setActiveBatch(batchId){
         BatchApi.get(batchId, (data) => {
             console.log(data);
