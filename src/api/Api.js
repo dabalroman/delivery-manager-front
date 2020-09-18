@@ -1,6 +1,7 @@
 export default class Api {
     ADDRESS = 'address';
     BATCH = 'batch';
+    BATCH_LIST = 'batch/list';
     ROUTE = 'route';
 
     /**
