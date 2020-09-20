@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {GoogleMap, LoadScript, Marker} from '@react-google-maps/api';
+import {GoogleMap, LoadScript, Marker, Polyline} from '@react-google-maps/api';
+import polyline from '@mapbox/polyline';
 
 import {API_KEY} from "./api_key";
 import {mapStyle} from "./MapStyle";
@@ -62,6 +63,10 @@ class Map extends Component {
                     options={{styles: mapStyle}}
                 >
                     {markers}
+
+                    <Polyline
+                        path={polyline.decode('w`ypHewxrBHqGgFvA').map(n => {return {lat: n[0], lng: n[1]}})}
+                    />
                 </GoogleMap>
             </LoadScript>
         )

@@ -45,9 +45,9 @@ export const List = (props) => {
 
         let arrangement = createArrangementMap(orders);
         const timeout = setTimeout(() => {
-            ordersArrangement.current = createArrangementMap(orders);
+            ordersArrangement.current = arrangement;
             updateOrdersArrangement(arrangement);
-        }, 5000);
+        }, 1000);
 
         return () => clearTimeout(timeout);
     }, [orders, updateOrdersArrangement]);
