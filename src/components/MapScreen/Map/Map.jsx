@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {GoogleMap, LoadScript, Marker, Polyline} from '@react-google-maps/api';
 import polylineTools from '@mapbox/polyline';
+import {Button} from "react-bootstrap";
+import Style from "./Map.module.css"
 
 import {API_KEY} from "./api_key";
 import {mapStyle} from "./MapStyle";
@@ -8,6 +10,11 @@ import {CHANGE_SOURCE} from "../MapScreen";
 
 import markerRedIcon from './../../../assets/icons/spotlight-poi-dotless-red.png';
 import markerBlueIcon from './../../../assets/icons/spotlight-poi-dotless-blue.png';
+
+const gradient = {
+    start: {r: 255, g: 0, b: 100},
+    end: {r: 20, g: 123, b: 255}
+}
 
 const containerStyle = {
     width: '100%',
@@ -40,8 +47,16 @@ class Map extends Component {
         super(props);
 
         this.state = {
-            mode: MODE.FAST
+            mode: MODE.ACCURATE
         }
+
+        this.toggleMode = this.toggleMode.bind(this);
+    }
+
+    toggleMode() {
+        this.setState({
+            mode: (this.state.mode === MODE.FAST) ? MODE.ACCURATE : MODE.FAST
+        })
     }
 
     render() {
@@ -63,31 +78,51 @@ class Map extends Component {
             let a = this.props.orders[idUnderOrdersArrayIndex[this.props.ordersArrangement[i]]];
             let b = this.props.orders[idUnderOrdersArrayIndex[this.props.ordersArrangement[i + 1]]];
 
-            if (this.state.mode === MODE.FAST) {
-                addressesPairs.push([a.geo_cord, b.geo_cord]);
-            } else {
-                addressesPairs.push(a.address_id + ',' + b.address_id);
+            let pair = {
+                fast: [a.geo_cord, b.geo_cord]
+            };
+
+            if (this.state.mode === MODE.ACCURATE) {
+                pair.accurate = a.address_id + ',' + b.address_id;
             }
+
+            addressesPairs.push(pair);
         }
 
+        const amountOfParts = addressesPairs.length - 1;
         const routes = addressesPairs.map((addressPair, index) => {
 
-            if (this.state.mode === MODE.FAST) {
-                addressPair = addressPair.map(cords => cords.split(',').map(x => parseFloat(x)));
+            let p = index / amountOfParts;
+            let color = {
+                r: gradient.start.r * (1 - p) + gradient.end.r * p,
+                g: gradient.start.g * (1 - p) + gradient.end.g * p,
+                b: gradient.start.b * (1 - p) + gradient.end.b * p,
+            }
+            color = `rgb(${color.r}, ${color.g}, ${color.b})`;
+
+            if (this.state.mode === MODE.ACCURATE && this.props.routeBits[addressPair.accurate] !== undefined) {
                 return (
                     <Polyline
                         key={index}
-                        path={[{lat: addressPair[0][0], lng: addressPair[0][1]}, {lat: addressPair[1][0], lng: addressPair[1][1]}]}
+                        path={polylineTools.decode(this.props.routeBits[addressPair.accurate].polyline).map(n => {
+                            return {lat: n[0], lng: n[1]}
+                        })}
+                        options={{strokeColor: color}}
                     />
-                )
+                );
             }
 
+            addressPair = addressPair.fast.map(cords => cords.split(',').map(x => parseFloat(x)));
             return (
                 <Polyline
                     key={index}
-                    path={polylineTools.decode(this.props.routeBits[addressPair].polyline).map(n => {return {lat: n[0], lng: n[1]}})}
+                    path={[
+                        {lat: addressPair[0][0], lng: addressPair[0][1]},
+                        {lat: addressPair[1][0], lng: addressPair[1][1]}
+                    ]}
+                    options={{color: color}}
                 />
-            );
+            )
 
 
         });
@@ -111,8 +146,6 @@ class Map extends Component {
             );
         });
 
-        // const
-
         return (
             <LoadScript
                 googleMapsApiKey={API_KEY}
@@ -127,11 +160,14 @@ class Map extends Component {
                     {routes}
 
                     {markers}
-
-                    {/*<Polyline*/}
-                    {/*    path={polylineTools.decode('w`ypHewxrBHqGgFvA').map(n => {return {lat: n[0], lng: n[1]}})}*/}
-                    {/*/>*/}
                 </GoogleMap>
+                <div>
+                    <Button
+                        className={Style.toggleButton}
+                        variant="light"
+                        onClick={this.toggleMode}
+                    >Tryb {this.state.mode === MODE.FAST ? 'Szybki' : 'Dokładny'}</Button>
+                </div>
             </LoadScript>
         )
     }
