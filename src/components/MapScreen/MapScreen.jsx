@@ -45,6 +45,7 @@ class MapScreen extends Component {
             },
             batchId: null,
             routeId: null,
+            routeBits: null,
             newAddressesAmount: 0,
             knownAddressesAmount: 0,
             deliveryDate: '',
@@ -120,12 +121,12 @@ class MapScreen extends Component {
             console.log(data);
 
             let route = data.route.addresses_ids.split(',').map(x => parseInt(x));
-            let arrangement = Route.transformRouteToOrdersArrangement(route, data.orders);
+            let ordersArrangement = Route.transformRouteToOrdersArrangement(route, data.orders);
 
             this.setState({
                 isLoaded: true,
                 orders: data.orders.slice(),
-                ordersArrangement: arrangement,
+                ordersArrangement: ordersArrangement,
                 ordersAmount: data.orders_amount,
                 activeOrder: {
                     id: data.orders[0].id,
@@ -134,6 +135,7 @@ class MapScreen extends Component {
                 },
                 batchId: data.batch_id,
                 routeId: data.route.id,
+                routeBits: data.route.route_bits,
                 newAddressesAmount: data.new_addresses_amount,
                 knownAddressesAmount: data.known_addresses_amount,
                 deliveryDate: data.delivery_date
@@ -167,7 +169,8 @@ class MapScreen extends Component {
                         <Col xs={8} className={Style.height100}>
                             <Map
                                 orders={this.state.orders}
-                                arrangement={this.state.ordersArrangement}
+                                ordersArrangement={this.state.ordersArrangement}
+                                routeBits={this.state.routeBits}
                                 activeOrder={this.state.activeOrder}
                                 setActiveOrder={this.setActiveOrder}
                             />

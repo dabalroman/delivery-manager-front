@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {GoogleMap, LoadScript, Marker, Polyline} from '@react-google-maps/api';
-import polyline from '@mapbox/polyline';
+import polylineTools from '@mapbox/polyline';
 
 import {API_KEY} from "./api_key";
 import {mapStyle} from "./MapStyle";
@@ -29,10 +29,68 @@ const iconBlue = {
     url: markerBlueIcon
 }
 
+const MODE = {
+    FAST: 0,
+    ACCURATE: 1
+}
+
 class Map extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            mode: MODE.FAST
+        }
+    }
+
     render() {
-        //Create inverted arrangement array (order.id: position)
-        let labelMap = this.props.arrangement.reduce((acc, val, index) => {acc[val] = index; return acc}, {});
+        //Create array that maps given orderID to position in arrangement array
+        const labelMap = this.props.ordersArrangement.reduce((acc, val, index) => {
+            acc[val] = index;
+            return acc
+        }, {});
+
+        //Crate array that maps given orderID to position orders array
+        const idUnderOrdersArrayIndex = this.props.orders.reduce((acc, val, index) => {
+            acc[val.id] = index;
+            return acc
+        }, {});
+
+        let addressesPairs = [];
+
+        for (let i = 0; i < this.props.ordersArrangement.length - 1; i++) {
+            let a = this.props.orders[idUnderOrdersArrayIndex[this.props.ordersArrangement[i]]];
+            let b = this.props.orders[idUnderOrdersArrayIndex[this.props.ordersArrangement[i + 1]]];
+
+            if (this.state.mode === MODE.FAST) {
+                addressesPairs.push([a.geo_cord, b.geo_cord]);
+            } else {
+                addressesPairs.push(a.address_id + ',' + b.address_id);
+            }
+        }
+
+        const routes = addressesPairs.map((addressPair, index) => {
+
+            if (this.state.mode === MODE.FAST) {
+                addressPair = addressPair.map(cords => cords.split(',').map(x => parseFloat(x)));
+                return (
+                    <Polyline
+                        key={index}
+                        path={[{lat: addressPair[0][0], lng: addressPair[0][1]}, {lat: addressPair[1][0], lng: addressPair[1][1]}]}
+                    />
+                )
+            }
+
+            return (
+                <Polyline
+                    key={index}
+                    path={polylineTools.decode(this.props.routeBits[addressPair].polyline).map(n => {return {lat: n[0], lng: n[1]}})}
+                />
+            );
+
+
+        });
 
         const markers = this.props.orders.map((order) => {
             let [lat, lng] = order.geo_cord.split(',').map(x => parseFloat(x));
@@ -46,10 +104,14 @@ class Map extends Component {
                     key={order.id}
                     icon={active ? iconBlue : iconRed}
                     zIndex={active ? 1000 : labelNumber}
-                    onClick={() => {this.props.setActiveOrder(order.id, CHANGE_SOURCE.MAP)}}
+                    onClick={() => {
+                        this.props.setActiveOrder(order.id, CHANGE_SOURCE.MAP)
+                    }}
                 />
             );
         });
+
+        // const
 
         return (
             <LoadScript
@@ -62,11 +124,13 @@ class Map extends Component {
                     zoom={13}
                     options={{styles: mapStyle}}
                 >
+                    {routes}
+
                     {markers}
 
-                    <Polyline
-                        path={polyline.decode('w`ypHewxrBHqGgFvA').map(n => {return {lat: n[0], lng: n[1]}})}
-                    />
+                    {/*<Polyline*/}
+                    {/*    path={polylineTools.decode('w`ypHewxrBHqGgFvA').map(n => {return {lat: n[0], lng: n[1]}})}*/}
+                    {/*/>*/}
                 </GoogleMap>
             </LoadScript>
         )
