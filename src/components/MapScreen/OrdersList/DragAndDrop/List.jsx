@@ -21,6 +21,7 @@ export const List = (props) => {
     const updateOrdersArrangement = props.updateOrdersArrangement;
     const ordersArrangement = useRef(props.ordersArrangement.slice());
     const firstRender = useRef(true);
+    const lastActiveOrderId = useRef(0);
 
     /**
      * Watch for external orders arrangement changes
@@ -43,8 +44,8 @@ export const List = (props) => {
             return;
         }
 
-        let arrangement = createArrangementMap(orders);
         const timeout = setTimeout(() => {
+            let arrangement = createArrangementMap(orders);
             ordersArrangement.current = arrangement;
             updateOrdersArrangement(arrangement);
         }, 1000);
@@ -83,11 +84,14 @@ export const List = (props) => {
     }, {});
 
     useEffect(() => {
-        if (refs[props.activeOrder.id] !== undefined && props.activeOrder.changeSource !== CHANGE_SOURCE.LIST) {
-            refs[props.activeOrder.id].current.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
-            });
+        if (lastActiveOrderId.current !== props.activeOrder.id) {
+            if (refs[props.activeOrder.id] !== undefined && props.activeOrder.changeSource !== CHANGE_SOURCE.LIST) {
+                refs[props.activeOrder.id].current.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                });
+                lastActiveOrderId.current = props.activeOrder.id;
+            }
         }
     }, [refs, props.activeOrder.id, props.activeOrder.changeSource]);
 
