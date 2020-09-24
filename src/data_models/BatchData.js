@@ -13,6 +13,6 @@ class BatchData {
     known_addresses_amount;
     /** @var {Order[]} orders */
     orders;
-    /** @var {Route[]} routes */
-    routes;
+    /** @var {Route} routes */
+    route;
 }

@@ -119,7 +119,7 @@ class MapScreen extends Component {
         BatchApi.get(batchId, (data) => {
             console.log(data);
 
-            let route = data.routes[0].addresses_ids.split(',').map(x => parseInt(x));
+            let route = data.route.addresses_ids.split(',').map(x => parseInt(x));
             let arrangement = Route.transformRouteToOrdersArrangement(route, data.orders);
 
             this.setState({
@@ -133,7 +133,7 @@ class MapScreen extends Component {
                     changeSource: CHANGE_SOURCE.DEFAULT
                 },
                 batchId: data.batch_id,
-                routeId: data.routes[0].id,
+                routeId: data.route.id,
                 newAddressesAmount: data.new_addresses_amount,
                 knownAddressesAmount: data.known_addresses_amount,
                 deliveryDate: data.delivery_date

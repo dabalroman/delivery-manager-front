@@ -13,6 +13,8 @@ export default class Route {
     id_hash;
     /** @var {string} routed_hash */
     routed_hash;
+    /** @var {array} route_bits */
+    route_bits;
 
     /**
      *
