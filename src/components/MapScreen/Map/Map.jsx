@@ -92,13 +92,13 @@ class Map extends Component {
         const amountOfParts = addressesPairs.length - 1;
         const routes = addressesPairs.map((addressPair, index) => {
 
-            let p = index / amountOfParts;
+            let p = Math.pow(index / amountOfParts, 3);
             let color = {
                 r: gradient.start.r * (1 - p) + gradient.end.r * p,
                 g: gradient.start.g * (1 - p) + gradient.end.g * p,
                 b: gradient.start.b * (1 - p) + gradient.end.b * p,
             }
-            color = `rgb(${color.r}, ${color.g}, ${color.b})`;
+            let rgbColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
 
             if (this.state.mode === MODE.ACCURATE && this.props.routeBits[addressPair.accurate] !== undefined) {
                 return (
@@ -107,7 +107,7 @@ class Map extends Component {
                         path={polylineTools.decode(this.props.routeBits[addressPair.accurate].polyline).map(n => {
                             return {lat: n[0], lng: n[1]}
                         })}
-                        options={{strokeColor: color}}
+                        options={{strokeColor: rgbColor}}
                     />
                 );
             }
@@ -120,7 +120,7 @@ class Map extends Component {
                         {lat: addressPair[0][0], lng: addressPair[0][1]},
                         {lat: addressPair[1][0], lng: addressPair[1][1]}
                     ]}
-                    options={{color: color}}
+                    options={{color: rgbColor}}
                 />
             )
 
