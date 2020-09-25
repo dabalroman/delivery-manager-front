@@ -116,6 +116,7 @@ class OrderDetails extends Component {
                             <td className={Style.cellLeft}>🏙 Miasto</td>
                             <td className={Style.cellRight}>
                                 <FormControl
+                                    readOnly={true}
                                     defaultValue={this.props.order.city || ''}
                                     onChange={(x) => this.editValue('city', x.target.value)}
                                 />
@@ -125,6 +126,7 @@ class OrderDetails extends Component {
                             <td className={Style.cellLeft}>🚗 Ulica</td>
                             <td className={Style.cellRight}>
                                 <FormControl
+                                    readOnly={true}
                                     defaultValue={this.props.order.street || ''}
                                     onChange={(x) => this.editValue('street', x.target.value)}
                                 />
@@ -134,6 +136,7 @@ class OrderDetails extends Component {
                             <td className={Style.cellLeft}>🏠 Numer domu</td>
                             <td className={Style.cellRight}>
                                 <FormControl
+                                    readOnly={true}
                                     defaultValue={this.props.order.street_number || ''}
                                     onChange={(x) => this.editValue('street_number', x.target.value)}
                                 />
