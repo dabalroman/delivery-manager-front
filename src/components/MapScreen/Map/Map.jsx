@@ -10,6 +10,7 @@ import {CHANGE_SOURCE} from "../MapScreen";
 
 import markerRedIcon from './../../../assets/icons/spotlight-poi-dotless-red.png';
 import markerBlueIcon from './../../../assets/icons/spotlight-poi-dotless-blue.png';
+import RouteBitsApi from "../../../api/RouteBitsApi";
 
 const gradient = {
     start: {r: 255, g: 0, b: 100},
@@ -41,22 +42,35 @@ const MODE = {
     ACCURATE: 1
 }
 
-class Map extends Component {
+export default class Map extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            mode: MODE.ACCURATE
-        }
+            mode: MODE.ACCURATE,
+            localRouteBitsCache: {}
+        };
 
         this.toggleMode = this.toggleMode.bind(this);
+        this.pushNewRouteBitToCache = this.pushNewRouteBitToCache.bind(this);
+
+        this.routeBitsRequestHelperQueue = [];
     }
 
     toggleMode() {
         this.setState({
             mode: (this.state.mode === MODE.FAST) ? MODE.ACCURATE : MODE.FAST
         })
+    }
+
+    pushNewRouteBitToCache(addressPair, routeBit) {
+        let temp = this.state.localRouteBitsCache;
+        temp[addressPair] = routeBit;
+
+        this.setState({
+            localRouteBitsCache: temp
+        });
     }
 
     render() {
@@ -78,20 +92,18 @@ class Map extends Component {
             let a = this.props.orders[idUnderOrdersArrayIndex[this.props.ordersArrangement[i]]];
             let b = this.props.orders[idUnderOrdersArrayIndex[this.props.ordersArrangement[i + 1]]];
 
-            let pair = {
-                fast: [a.geo_cord, b.geo_cord]
-            };
-
-            if (this.state.mode === MODE.ACCURATE) {
-                pair.accurate = a.address_id + ',' + b.address_id;
-            }
-
-            addressesPairs.push(pair);
+            addressesPairs.push({
+                fast: [a.geo_cord, b.geo_cord],
+                accurate: a.address_id + ',' + b.address_id
+            });
         }
 
         const amountOfParts = addressesPairs.length - 1;
+        const combinedRouteBits = {...this.props.routeBits, ...this.state.localRouteBitsCache};
+
         const routes = addressesPairs.map((addressPair, index) => {
 
+            //Calculate routeBit color
             let p = Math.pow(index / amountOfParts, 3);
             let color = {
                 r: gradient.start.r * (1 - p) + gradient.end.r * p,
@@ -100,18 +112,35 @@ class Map extends Component {
             }
             let rgbColor = `rgb(${color.r}, ${color.g}, ${color.b})`;
 
-            if (this.state.mode === MODE.ACCURATE && this.props.routeBits[addressPair.accurate] !== undefined) {
-                return (
-                    <Polyline
-                        key={index}
-                        path={polylineTools.decode(this.props.routeBits[addressPair.accurate].polyline).map(n => {
-                            return {lat: n[0], lng: n[1]}
-                        })}
-                        options={{strokeColor: rgbColor}}
-                    />
+            //Render accurate polyline
+            if (combinedRouteBits[addressPair.accurate] !== undefined) {
+                if (this.state.mode === MODE.ACCURATE) {
+                    return (
+                        <Polyline
+                            key={index}
+                            path={polylineTools.decode(combinedRouteBits[addressPair.accurate].polyline).map(n => {
+                                return {lat: n[0], lng: n[1]}
+                            })}
+                            options={{strokeColor: rgbColor}}
+                        />
+                    );
+                }
+            } else {
+                //If polyline is not available locally get it from the server
+                this.routeBitsRequestHelperQueue.push(addressPair.accurate);
+
+                RouteBitsApi.get(
+                    addressPair.accurate,
+                    (data) => {
+                        this.pushNewRouteBitToCache(this.routeBitsRequestHelperQueue.shift(), data);
+                    },
+                    () => {
+                        console.log('Dynamic routeBit fetching failed.')
+                    }
                 );
             }
 
+            //Or fallback to straight line
             addressPair = addressPair.fast.map(cords => cords.split(',').map(x => parseFloat(x)));
             return (
                 <Polyline
@@ -123,8 +152,6 @@ class Map extends Component {
                     options={{color: rgbColor}}
                 />
             )
-
-
         });
 
         const markers = this.props.orders.map((order) => {
@@ -145,6 +172,8 @@ class Map extends Component {
                 />
             );
         });
+
+
 
         return (
             <LoadScript
@@ -172,5 +201,3 @@ class Map extends Component {
         )
     }
 }
-
-export default Map;

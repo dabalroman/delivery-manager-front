@@ -3,6 +3,7 @@ export default class Api {
     BATCH = 'batch';
     BATCH_LIST = 'batch/list';
     ROUTE = 'route';
+    ROUTE_BITS = 'route/bit';
 
     /**
      * @callback onSuccess
@@ -16,7 +17,7 @@ export default class Api {
 
     /**
      * @param {string} endpoint
-     * @param {number} resourceId
+     * @param {number|string} resourceId
      * @param {onSuccess} onSuccess
      * @param {onError} onError
      */
