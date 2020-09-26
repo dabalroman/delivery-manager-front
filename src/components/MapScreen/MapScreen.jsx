@@ -61,8 +61,6 @@ class MapScreen extends Component {
      * @param {int[]} newArrangement Int array containing Orders IDs
      */
     updateOrdersArrangement(newArrangement) {
-        //TODO: FIX - double execution on startup
-
         this.setState({
             ordersArrangement: newArrangement.slice()
         });
