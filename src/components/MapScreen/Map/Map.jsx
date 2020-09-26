@@ -53,9 +53,9 @@ export default class Map extends Component {
         };
 
         this.toggleMode = this.toggleMode.bind(this);
-        this.pushNewRouteBitToCache = this.pushNewRouteBitToCache.bind(this);
+        this.pushNewRouteBitsToCache = this.pushNewRouteBitsToCache.bind(this);
 
-        this.routeBitsRequestHelperQueue = [];
+        this.routeBitsFetchQueue = [];
     }
 
     toggleMode() {
@@ -64,9 +64,12 @@ export default class Map extends Component {
         })
     }
 
-    pushNewRouteBitToCache(addressPair, routeBit) {
+    /**
+     * @param {RouteBit[]} routeBits
+     */
+    pushNewRouteBitsToCache(routeBits) {
         let temp = this.state.localRouteBitsCache;
-        temp[addressPair] = routeBit;
+        routeBits.forEach(routeBit => temp[routeBit.id] = routeBit);
 
         this.setState({
             localRouteBitsCache: temp
@@ -101,6 +104,7 @@ export default class Map extends Component {
         const amountOfParts = addressesPairs.length - 1;
         const combinedRouteBits = {...this.props.routeBits, ...this.state.localRouteBitsCache};
 
+        //Create routes
         const routes = addressesPairs.map((addressPair, index) => {
 
             //Calculate routeBit color
@@ -126,18 +130,8 @@ export default class Map extends Component {
                     );
                 }
             } else {
-                //If polyline is not available locally get it from the server
-                this.routeBitsRequestHelperQueue.push(addressPair.accurate);
-
-                RouteBitsApi.get(
-                    addressPair.accurate,
-                    (data) => {
-                        this.pushNewRouteBitToCache(this.routeBitsRequestHelperQueue.shift(), data);
-                    },
-                    () => {
-                        console.log('Dynamic routeBit fetching failed.')
-                    }
-                );
+                //Add polyline to fetch query
+                this.routeBitsFetchQueue.push(addressPair.accurate);
             }
 
             //Or fallback to straight line
@@ -154,6 +148,22 @@ export default class Map extends Component {
             )
         });
 
+        //If polyline is not available locally get it from the server
+        if(this.routeBitsFetchQueue.length) {
+            RouteBitsApi.get(
+                this.routeBitsFetchQueue.join(','),
+                (routeBits) => {
+                    this.pushNewRouteBitsToCache(routeBits);
+                    console.log('Fetched ' + routeBits.length + ' route bits.');
+                },
+                () => {
+                    console.log('Dynamic routeBit fetching failed.')
+                }
+            );
+            this.routeBitsFetchQueue = [];
+        }
+
+        //Create markers
         const markers = this.props.orders.map((order) => {
             let [lat, lng] = order.geo_cord.split(',').map(x => parseFloat(x));
             let active = order.id === this.props.activeOrder.id;
@@ -172,8 +182,6 @@ export default class Map extends Component {
                 />
             );
         });
-
-
 
         return (
             <LoadScript

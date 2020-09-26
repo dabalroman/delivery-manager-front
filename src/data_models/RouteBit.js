@@ -5,4 +5,6 @@ export default class RouteBit {
     polyline;
     /** @var {int} length **/
     length;
+    /** @var {string|undefined} id **/
+    id;
 }
