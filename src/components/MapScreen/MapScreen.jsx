@@ -73,12 +73,12 @@ class MapScreen extends Component {
                 addresses_ids: Route.transformOrdersArrangementToRoute(newArrangement, this.state.orders).join(',')
             },
             () => {
-                console.log("OK")
+                // console.log("OK")
             },
-            () => console.log("ERROR")
+            () => {
+                console.log("Route update error");
+            }
         );
-
-        console.log("ORDERS ARRANGEMENT UPDATED");
     }
 
     /**
