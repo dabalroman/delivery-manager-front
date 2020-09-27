@@ -104,6 +104,8 @@ export default class Map extends Component {
         const amountOfParts = addressesPairs.length - 1;
         const combinedRouteBits = {...this.props.routeBits, ...this.state.localRouteBitsCache};
 
+        let routeLength = 0;
+
         //Create routes
         const routes = addressesPairs.map((addressPair, index) => {
 
@@ -118,6 +120,8 @@ export default class Map extends Component {
 
             //Render accurate polyline
             if (combinedRouteBits[addressPair.accurate] !== undefined) {
+                routeLength += combinedRouteBits[addressPair.accurate].length;
+
                 if (this.state.mode === MODE.ACCURATE) {
                     return (
                         <Polyline
@@ -149,7 +153,7 @@ export default class Map extends Component {
         });
 
         //If polyline is not available locally get it from the server
-        if(this.routeBitsFetchQueue.length) {
+        if (this.routeBitsFetchQueue.length) {
             RouteBitsApi.get(
                 this.routeBitsFetchQueue.join(','),
                 (routeBits) => {
@@ -203,7 +207,12 @@ export default class Map extends Component {
                         className={Style.toggleButton}
                         variant="light"
                         onClick={this.toggleMode}
-                    >Tryb {this.state.mode === MODE.FAST ? 'Szybki' : 'Dokładny'}</Button>
+                    >
+                        Tryb {this.state.mode === MODE.FAST ? 'Szybki' : 'Dokładny'}
+                    </Button>
+                    <div className={Style.routeLength}>
+                        Długość trasy: {(routeLength / 1000).toFixed(1)} km
+                    </div>
                 </div>
             </LoadScript>
         )
