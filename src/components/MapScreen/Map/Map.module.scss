@@ -1,4 +1,4 @@
-.toggleButton{
+.toggleButton {
     width: 175px;
     height: 40px;
 
@@ -9,9 +9,13 @@
     box-shadow: #AAA 1px 1px 3px;
     background-color: #fff !important;
     border-radius: 0 !important;
+
+    &:hover{
+        background-color: #EEE !important;
+    }
 }
 
-.routeLength{
+.routeLength {
     width: 200px;
     height: 40px;
 

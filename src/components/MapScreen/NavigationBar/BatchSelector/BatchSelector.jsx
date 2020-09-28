@@ -34,7 +34,7 @@ export default class BatchSelector extends Component {
                 >
                     {
                         (activeBatchPos !== -1)
-                        ? "Aktywny batch: " + this.state.batches[activeBatchPos]['delivery_date']
+                        ? "Batch: " + this.state.batches[activeBatchPos]['delivery_date']
                         : "Ładowanie"
                     }
                 </Dropdown.Toggle>
