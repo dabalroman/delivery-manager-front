@@ -127,7 +127,7 @@ class MapScreen extends Component {
                 ordersArrangement: ordersArrangement,
                 ordersAmount: data.orders_amount,
                 activeOrder: {
-                    id: data.orders[0].id,
+                    id: ordersArrangement[0],
                     tabPos: 0,
                     changeSource: CHANGE_SOURCE.DEFAULT
                 },
