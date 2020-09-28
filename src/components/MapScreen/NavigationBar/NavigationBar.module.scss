@@ -1,5 +1,36 @@
 .navBar{
     height: 48px;
     width: 100%;
+    padding: 3px 0 !important;
+
     background-color: #fff;
+    box-shadow: #AAAAAA 0 2px 2px;
+
+    position: relative;
+    z-index: 1000;
+
+    .title{
+        line-height: 38px;
+        padding: 2px 10px !important;
+
+        font-size: 1.3em !important;
+        font-style: italic;
+        font-weight: bold;
+        letter-spacing: 1px;
+        font-family: sans-serif;
+
+        span{
+            font-size: 0.7em;
+        }
+    }
+
+    .select{
+        padding: 2px 0 !important;
+    }
+
+    .logOut{
+        padding: 2px 10px !important;
+        text-align: right;
+    }
 }
+

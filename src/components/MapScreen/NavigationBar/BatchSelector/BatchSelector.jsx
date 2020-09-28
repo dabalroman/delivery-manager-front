@@ -27,15 +27,21 @@ export default class BatchSelector extends Component {
         const activeBatchPos = this.state.batches.findIndex(x => x.id === this.props.activeBatch);
         return (
             <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                <Dropdown.Toggle
+                    variant="outline-primary"
+                    id="dropdown-basic"
+                    className={'w-100'}
+                >
                     {
                         (activeBatchPos !== -1)
-                        ? this.state.batches[activeBatchPos]['delivery_date']
+                        ? "Aktywny batch: " + this.state.batches[activeBatchPos]['delivery_date']
                         : "Ładowanie"
                     }
                 </Dropdown.Toggle>
 
-                <Dropdown.Menu>
+                <Dropdown.Menu
+                    className={'w-100 text-center'}
+                >
                     {this.state.batches.map(batch => {
                         return (
                             <Dropdown.Item

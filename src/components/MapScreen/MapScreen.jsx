@@ -155,7 +155,7 @@ class MapScreen extends Component {
         } else {
             return (
                 <Container className={Style.height100}>
-                    <Row className={Style.navBar} noGutters>
+                    <Row noGutters>
                         <Col>
                             <NavigationBar
                                 activeBatch={this.state.batchId}
