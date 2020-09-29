@@ -5,8 +5,11 @@ import './App.css';
 
 function App() {
     return (
-        <div className="App">
-            <MapScreen/>
+        <div>
+            <div className="App" id='react-no-print'>
+                <MapScreen/>
+            </div>
+            <div id='print-mount'/>
         </div>
     );
 }

@@ -24,8 +24,16 @@
         }
     }
 
+    .print{
+        padding: 2px 5px !important;
+
+        button{
+            width: 100%;
+        }
+    }
+
     .select{
-        padding: 2px 0 !important;
+        padding: 2px 5px !important;
     }
 
     .logOut{

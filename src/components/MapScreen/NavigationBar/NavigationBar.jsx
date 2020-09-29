@@ -8,8 +8,15 @@ export const NavigationBar = (props) => {
         <div className={Style.navBar}>
             <Container>
                 <Row noGutters>
-                    <Col xs={8} className={Style.title}>
+                    <Col xs={6} className={Style.title}>
                         Delivery Manager <span>v0.1</span>
+                    </Col>
+                    <Col xs={2} className={Style.print}>
+                        <Button
+                            onClick={() => {props.print()}}
+                            variant={"outline-primary"}>
+                            Drukuj
+                        </Button>
                     </Col>
                     <Col xs={2} className={Style.select}>
                         <BatchSelector

@@ -11,6 +11,9 @@ import Style from "./MapScreen.module.css"
 import {NavigationBar} from "./NavigationBar/NavigationBar";
 import Route from "../../data_models/Route";
 
+import ReactDOM from "react-dom";
+import PrintOrderListTemplate from "../Print/PrintOrderListTemplate";
+
 export const CHANGE_SOURCE = {
     DEFAULT: 0,
     MAP: 1,
@@ -54,6 +57,7 @@ class MapScreen extends Component {
         this.setActiveBatch = this.setActiveBatch.bind(this);
         this.setActiveOrder = this.setActiveOrder.bind(this);
         this.updateOrdersArrangement = this.updateOrdersArrangement.bind(this);
+        this.print = this.print.bind(this);
     }
 
     /**
@@ -147,6 +151,23 @@ class MapScreen extends Component {
         });
     }
 
+    /**
+     * Create and print route
+     */
+    print(){
+        ReactDOM.render(
+            <PrintOrderListTemplate
+                orders={this.state.orders}
+                ordersArrangement={this.state.ordersArrangement}
+                deliveryDate={this.state.deliveryDate}
+                ordersAmount={this.state.ordersAmount}
+            />
+            , document.getElementById('print-mount')
+        );
+
+        window.print();
+    }
+
     render() {
         if (this.state.error) {
             return <div>Error: {this.state.error.message}</div>;
@@ -160,6 +181,7 @@ class MapScreen extends Component {
                             <NavigationBar
                                 activeBatch={this.state.batchId}
                                 setActiveBatch={this.setActiveBatch}
+                                print={this.print}
                             />
                         </Col>
                     </Row>
