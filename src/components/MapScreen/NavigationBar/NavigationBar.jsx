@@ -25,9 +25,9 @@ export const NavigationBar = (props) => {
                         />
                     </Col>
                     <Col xs={2} className={Style.logOut}>
-                        <Button variant={"outline-warning"}>
-                            Wyloguj
-                        </Button>
+                        {/*<Button variant={"outline-warning"}>*/}
+                        {/*    Wyloguj*/}
+                        {/*</Button>*/}
                     </Col>
                 </Row>
             </Container>
