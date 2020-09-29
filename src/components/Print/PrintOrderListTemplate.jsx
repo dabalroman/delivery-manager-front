@@ -10,7 +10,7 @@ export default class PrintOrderListTemplate extends React.Component {
             .map((orderData, index) => {
                 return (
                     <tr key={index}>
-                        <td className={Style.id}>{index}</td>
+                        <td className={Style.id}>{index + 1}</td>
                         <td className={Style.diet}>
                             <span
                                 className={(orderData.amount > 1) ? Style.highAmount : ''}>{orderData.amount}x</span> {orderData.type}
